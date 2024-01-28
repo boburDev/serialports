@@ -25,10 +25,8 @@ module.exports = {
                 port.once('open', () => {
                     port.write(startComman)
                     port.once('data', (data) => {
-                    // console.log(data, 1);
                         port.close()
                         port.once('close', () => {
-                        // console.log('closed');
                             port.open()
                             port.once('open', () => {
                                 port.write(verifyCommand)
