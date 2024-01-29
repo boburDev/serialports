@@ -2,45 +2,62 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const { commandMaker, sendData } = require('../../config')
 
+  // dataBits: 7,
+  // stopBits: 2,
+  // parity: "none",
+  // lock: false,
 let port = null
 let parser = null
-port = new SerialPort({path: 'COM4', baudRate: 9600,autoOpen: false});
+port = new SerialPort({
+    path: 'COM4',
+    baudRate: 9600,
+    autoOpen: false,
+    dataBits: 7,
+    stopBits: 1,
+    parity: "even"
+});
 parser = new ReadlineParser()
 
-let startCommand = [72,0]
-let reqCommand = [72,8,0]
+
+// com port = 194409107
+
+// let startCommand = [72,0]
+// let verifyComm = [72,1,1,1,1,1,1,1,1]
+// let reqCommand = [72,8,0]
+
+let commandStart = [47,63,33,13,10]
+let commandVerify = [7,7,7,7,7,7]
+let commandRequest = [72,8,0]
 
 module.exports = {
     GET: async (req, res) => {
         try {
 
-            let startComman = commandMaker(startCommand)
-            let verifyCommand = commandMaker([72,1,1,1,1,1,1,1,1])
-            let commandRequest = commandMaker(reqCommand)
-            
+            let startCommand = commandMaker(commandStart)
+            let verifyCommand = commandMaker(commandVerify)
+            let requestCommand = commandMaker(commandRequest)
+
             if (true) {
                 port.open()
 
             // CODE STARTS
                 port.once('open', () => {
-                    port.write(startComman)
-                    port.once('data', (data) => {
+                    port.write(startCommand)
+                    port.once('data', (x) => {
                         port.close()
+                        // console.log(data.toString('hex'), [...data])
                         port.once('close', () => {
                             port.open()
                             port.once('open', () => {
                                 port.write(verifyCommand)
-                                port.once('data', () => {
+                                port.once('data', (y) => {
                                     port.close()
                                     port.once('close', () => {
                                         port.open()
                                         port.once('open', ()=>{
-                                            port.write(commandRequest)
-                                            port.once('data', (data)=> {
-
-
-
-
+                                            port.write(requestCommand)
+                                            port.once('data', (x)=> {
+                                                console.log(x, 'x')
                                             })         
                                         })
                                     })
@@ -49,10 +66,44 @@ module.exports = {
                         })
                     })
                 })
+
+
+
+
+
+                // recursion function base
+
+                // port.once('open', () => {
+                //     port.write(startComman)
+                //     port.once('data', () => {
+                //         port.close()
+                //         port.once('close', () => {
+                //             port.open()
+                //         })
+                //     })
+                // })
+
+
+
+                function getData () {
+
+                }
+
+
+
+
+
+
+
+
+
+
+
             } else {
                 sendData(200, [], res)
             }
         } catch (error) {
+            console.log(error)
             res.status(400).json({ error: error.message, token: null, status: 400, data: null })
         }
     }
