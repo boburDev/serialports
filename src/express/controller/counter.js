@@ -95,36 +95,3 @@ function getValuesFromParentheses(param) {
     };
     return result
 }
-
-
-
-
-// port.open();
-//     port.once('open', () => {
-//         port.write(DATA1);
-//         port.once('data', () => {
-//             port.close();
-//             port.once('close', ()=>{
-//                 port.open()
-//                 port.once('open', () =>{
-//                     port.write(DATA2)
-//                     port.once('data', () => {
-//                         port.close()
-//                         port.once('close', ()=>{
-//                             port.open()
-//                             port.once('open', () => {
-//                                 port.write(DATA3)
-//                                 port.once('data', volta => {
-//                                     port.close()
-//                                     let data = volta.toString()
-//                                     let result = getValuesFromParentheses(data)
-//                                     console.log(result)
-//                                     res.json({ data: false || 'result' })
-//                                 })
-//                             })
-//                         })
-//                     })
-//                 })
-//             })
-//         })
-//     })
