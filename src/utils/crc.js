@@ -8,9 +8,6 @@ function CRC16Modbus(params) {
     return {crc1, crc2}
 }
 
-
-
-
 module.exports = {
     CRC16Modbus
 }

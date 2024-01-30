@@ -1,5 +1,20 @@
-let inputValue = `
-
-
-
+let inputValue = `1 
+82 
+49 
+2 
+69 
+77 
+68 
+48 
+49 
+40 
+48 
+46 
+48 
+44 
+48 
+41 
+3 
+122
 `.split('\n').join('')
+console.log(inputValue);
