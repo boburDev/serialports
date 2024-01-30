@@ -1,33 +1,34 @@
 function getData (args, port, res, data=[]) {
-    let result = [...data]
     try {
+        let result = [...data]
         let arg = Object.values(args[0])[0]
         let key = Object.keys(args[0])[0]
+
         port.open()
         port.once('open', () => {
             port.write(arg)
             port.once('data', (response) => {
+            console.log(key)
                 port.close()
                 let newArgs = args.shift()
                 if (args.length !== 0) {
                     if (['volta', 'voltl'].includes(key)) {
-                        result.push({data: getValuesFromParentheses(response.toString())})
+                        result.push({[key]: getValuesFromParentheses(response.toString())})
                     }
                     setTimeout(()=>{getData(args, port, res, result)}, 80)
                 } else {
-                    result.push({data: response.toString()})
+                    // result.push({['close']: response.toString()})
                     res.json({ data: result, status: 200, error: null })
                 }
                 port.once('close', error => {
                     if (error) {
-                        console.log("error.message")
-                    // throw new Error(error.message)
+                        console.log('port closed', error)
                     }
                 })
             })
         })
     } catch (err) {
-        console.log("error: error in getData file")
+        console.log("error: error in getData file", err)
     }
 } 
 
