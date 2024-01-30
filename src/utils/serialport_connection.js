@@ -8,7 +8,6 @@ function getData (args, port, res, data=[]) {
         port.once('open', () => {
             port.write(arg)
             port.once('data', (response) => {
-            console.log(key)
                 port.close()
                 let newArgs = args.shift()
                 if (args.length !== 0) {
@@ -17,7 +16,7 @@ function getData (args, port, res, data=[]) {
                     }
                     setTimeout(()=>{getData(args, port, res, result)}, 80)
                 } else {
-                    // result.push({['close']: response.toString()})
+                    result.push({data: response.toString()})
                     res.json({ data: result, status: 200, error: null })
                 }
                 port.once('close', error => {

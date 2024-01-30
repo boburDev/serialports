@@ -29,7 +29,6 @@ const getMeterData = (req, res) => {
     let data4 = [...dataVoltL, CRC8(dataVoltL)]
     let data5 = [...dataFreq, CRC8(dataFreq)]
     let data6 = [...closePort, CRC8(closePort)]
-    console.log(CRC8(closePort))
     const DATA1 = Buffer.from(data1, 'ascii');
     const DATA2 = Buffer.from(data2, 'ascii');
     const DATA3 = Buffer.from(data3, 'ascii');
@@ -42,8 +41,7 @@ const getMeterData = (req, res) => {
         {connect_open: DATA2 },
         {volta: DATA3 },
         {voltl: DATA4 },
-        {freq: DATA5 },
-        {close: DATA6 }
+        {freq: DATA5 }
         ]
     getData(query, port, res)
 
