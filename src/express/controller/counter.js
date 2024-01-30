@@ -32,8 +32,6 @@ const getMeterData = (req, res) => {
     const DATA1 = Buffer.from(data1, 'ascii');
     const DATA2 = Buffer.from(data2, 'ascii');
     const DATA3 = Buffer.from(data3, 'ascii');
-    console.log(decToHex(data3))
-    // console.log(decToHex(data2))
 
     port.open();
     port.once('open', () => {

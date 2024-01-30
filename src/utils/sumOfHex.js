@@ -1,4 +1,4 @@
-function CRC8(hexArray) {
+function sumOfHex(hexArray) {
     let data = verificationArray(hexArray);
     const sumDecimal = data.reduce((acc, hexNumber) => {
         const decimalValue = parseInt(hexNumber, 16);
@@ -8,24 +8,8 @@ function CRC8(hexArray) {
         return acc + decimalValue;
     }, 0);
 
-    return calcCRC(sumDecimal.toString(16).toUpperCase());
+    return sumDecimal.toString(16).toUpperCase();
 }
-let x = CRC8([
-    '01',
-    '52',
-    '31',
-    '02',
-    '56',
-    '4F',
-    '4C',
-    '54',
-    '41',
-    '28',
-    '29',
-    '03',
-    '5F',
-]);
-console.log(x);
 
 function verificationArray(data) {
     let soh = '01';
@@ -43,13 +27,6 @@ function verificationArray(data) {
     return data.splice(0, +x + 1);
 }
 
-function calcCRC(hexString) {
-    const binaryString = parseInt(hexString, 16).toString(2);
-    const paddedBinaryString = binaryString.padStart(hexString.length * 4, '0');
-    const last7Bits = paddedBinaryString.slice(-7);
-    const hexResult = parseInt(last7Bits, 2).toString(16).toUpperCase();
 
-    return hexResult;
-}
 
-module.exports = CRC8;
+module.exports = sumOfHex;
