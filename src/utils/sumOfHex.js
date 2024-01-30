@@ -12,24 +12,20 @@ function CRC8(hexArray) {
 }
 let x = CRC8([
     '01',
-    '50',
-    '30',
-    '02',
-    '28',
+    '52',
     '31',
-    '44',
-    '34',
-    '36',
-    '30',
-    '43',
-    '37',
-    '35',
+    '02',
+    '56',
+    '4F',
+    '4C',
+    '54',
+    '41',
+    '28',
     '29',
     '03',
+    '5F',
 ]);
 console.log(x);
-
-module.exports = CRC8;
 
 function verificationArray(data) {
     let soh = '01';
@@ -40,7 +36,7 @@ function verificationArray(data) {
     }
     let x;
     for (let i in data) {
-        if (data[i] === '03') {
+        if (data[i] === etx) {
             x = i;
         }
     }
@@ -55,3 +51,5 @@ function calcCRC(hexString) {
 
     return hexResult;
 }
+
+module.exports = CRC8;
