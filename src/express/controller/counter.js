@@ -18,13 +18,13 @@ const getMeterData = (req, res) => {
 
     const data1 = [47, 63, 33, 13, 10]
     const data2 = [6, 48, 53, 49, 13, 10]
-    // const data = [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3] // psw check
+    const data = [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3] // psw check
     const dataVolta = [1, 82, 49, 2, 86, 79, 76, 84, 65, 40, 41, 3]  // volta value
     const dataVoltL = [1, 82, 49, 2, 86, 79, 76, 84, 76, 40, 41, 3] // voltl
     const dataFreq = [1, 82, 49, 2, 70, 82, 69, 81, 85, 40, 41, 3] // frequency
-    let data3 = [...data, CRC8(dataVolta)]
-    let data4 = [...data, CRC8(dataVoltL)]
-    let data5 = [...data, CRC8(dataFreq)]
+    let data3 = [...dataVolta, CRC8(dataVolta)]
+    let data4 = [...dataVoltL, CRC8(dataVoltL)]
+    let data5 = [...dataFreq, CRC8(dataFreq)]
     const DATA1 = Buffer.from(data1, 'ascii');
     const DATA2 = Buffer.from(data2, 'ascii');
     const DATA3 = Buffer.from(data3, 'ascii');
@@ -44,7 +44,6 @@ const getMeterData = (req, res) => {
                         port.close()
                         port.once('close', ()=>{
                             port.open()
-                            console.log('okokok')
                             port.once('open', () => {
                                 port.write(DATA3)
                                 port.once('data', volta => {
@@ -60,9 +59,11 @@ const getMeterData = (req, res) => {
                                                     port.once('open', () => {
                                                         port.write(DATA5)
                                                         port.once('data', freq => {
-                                                            // port.close()
-                                                            console.log('ok')
-                                                            
+                                                            port.close()
+                                                            console.log(volta, voltl, freq)
+                                                            // let data = x.toString()
+                                                            // let result = getValuesFromParentheses(data)
+                                                            res.json({ data: false || 'result' })
                                                         })
                                                     })
                                                 })            
@@ -80,9 +81,6 @@ const getMeterData = (req, res) => {
 };
 
 
-                                    // let data = x.toString()
-                                    // // let result = getValuesFromParentheses(data)
-                                    // res.json({ data: true || result })
 
 module.exports = getMeterData;
 
