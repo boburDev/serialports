@@ -1,7 +1,7 @@
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const decToHex = require('../../utils/convertor.js')
-
+const { CRC8 } = require('../../utils/crc.js')
 const port = new SerialPort({ 
     path: 'COM5',
     baudRate: 9600,
@@ -12,13 +12,15 @@ const port = new SerialPort({
 });
 const parser = new ReadlineParser();
 
+    const data1 = [47, 63, 33, 13, 10]
+    const data2 = [6, 48, 53, 49, 13, 10]
+    // const data3 = [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3, 33]
+    const data3 = [1, 82, 49, 2, 86, 79, 76, 84, 65, 40, 41, 3]
+    console.log(CRC8(data3))
 
 
 const getMeterData = (req, res) => {
-    
-    const data1 = [47, 63, 33, 13, 10]
-    const data2 = [6, 48, 53, 49, 13, 10]
-    const data3 = [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3, 33]
+
 
     const DATA1 = Buffer.from(data1, 'ascii');
     const DATA2 = Buffer.from(data2, 'ascii');

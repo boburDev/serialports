@@ -1,6 +1,6 @@
 const crc16modbus = require('crc/calculators/crc16modbus');
 const {crc8} = require('crc')
-
+const sumOfHex = require('./sumOfHex.js')
 // Mercury, ...
 function CRC16Modbus(params) {
     const CRC = String(crc16modbus(new Int8Array(params)).toString(16))
@@ -10,9 +10,9 @@ function CRC16Modbus(params) {
 }
 
 // energomera, ...
-function calcCRC8(hexString) {
-    const binaryString = parseInt(hexString, 16).toString(2);
-    const paddedBinaryString = binaryString.padStart(hexString.length * 4, '0');
+function CRC8(params) {
+    const binaryString = parseInt(sumOfHex(params), 16).toString(2);
+    const paddedBinaryString = binaryString.padStart(sumOfHex(params).length * 4, '0');
     const last7Bits = paddedBinaryString.slice(-7);
     const hexResult = parseInt(last7Bits, 2).toString(16).toUpperCase();
     return parseInt(hexResult, 16);
@@ -21,5 +21,5 @@ function calcCRC8(hexString) {
 
 module.exports = {
     CRC16Modbus,
-    calcCRC8
+    CRC8
 }
