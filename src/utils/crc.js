@@ -1,4 +1,10 @@
 const crc16modbus = require('crc/calculators/crc16modbus');
+const {crc8} = require('crc')
+
+const data3 = [80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3]
+
+const CRC = (crc8(new Int8Array(data3)))
+console.log(CRC)
 
 
 function CRC16Modbus(params) {
