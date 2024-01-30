@@ -1,23 +1,12 @@
-module.exports = sumOfHex;
-
-function sumOfHex(hexArray) {
-    let data = verificationArray(hexArray);
-    const sumDecimal = data.reduce((acc, hexNumber) => {
-        const decimalValue = parseInt(hexNumber, 16);
-        if (isNaN(decimalValue)) {
-            throw new Error('Invalid hex input in the array');
-        }
-        return acc + decimalValue;
-    }, 0);
-
-    return sumDecimal.toString(16).toUpperCase();
+function sumOfDecimal(nums) {
+    let data = verificationArray(nums);
+    return data.reduce((acc, num) => acc + num, 0);
 }
 
-
 function verificationArray(data) {
-    let soh = '01';
-    let stx = '02';
-    let etx = '03';
+    let soh = 1;
+    let stx = 2;
+    let etx = 3;
     if (data[0] === soh || data[0] === stx) {
         data.shift();
     }
@@ -29,3 +18,5 @@ function verificationArray(data) {
     }
     return data.splice(0, +x + 1);
 }
+
+module.exports = sumOfDecimal;
