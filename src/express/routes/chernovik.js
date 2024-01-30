@@ -21,7 +21,7 @@
                 //                     port.once('close', () => {
                 //                         port.open()
                 //                         port.once('open', ()=>{
-                //                             port.write(XX)
+                //                             port.write(requestCommand)
                 //                             port.once('data', (z)=> {
                 //                                 console.log(z, 'z')
                 //                             })         

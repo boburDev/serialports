@@ -35,9 +35,11 @@ function getData (args, port, res, data=[]) {
                 port.close()
                 let newArgs = args.shift()
                 if (args.length !== 0) {
-                    console.log()
+                    console.log(result)
                     result.push({data: response})
                     getData(args, port, res, result)
+                    // setTimeout(()=>{ , 50)
+                    // clearTimeout(timeOut)
                 } else {
                     result.push({data: response})
                     res.json({ data: result, status: 200, error: null })
@@ -53,4 +55,4 @@ function getData (args, port, res, data=[]) {
     } catch (err) {
         console.log("error.message")
     }
-}
+} 
