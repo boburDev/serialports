@@ -1,7 +1,7 @@
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const { CRC16Modbus } = require('../../utils/crc');
-
+const decToHex = require('../../utils/convertor.js')
 const config = {
     // pnpId: 'USB\\VID_067B&PID_2303\\11111111',
     baudRate: 9600,
@@ -12,42 +12,28 @@ const config = {
 };
 const path = 'COM8';
 
-const port = new SerialPort({ ...config, path });
+const port = new SerialPort({ 
+    path: 'COM5',
+    baudRate: 9600,
+    dataBits: 7,
+    stopBits: 1,
+    parity: 'even',
+    autoOpen: false
+});
+
 const parser = new ReadlineParser();
-
-let commandStart = [47, 63, 33, 13, 10];
-let commandVerify = [6, 48, 53, 49, 13, 10];
-let time = [1, 82, 49, 2, 87, 65, 84, 67, 72, 40, 41, 3, 80];
-
 const getMeterData = (req, res) => {
-    let startCommand = CRC16Modbus(commandStart);
-    let verifyCommand = CRC16Modbus(commandVerify);
-    let requestCommand = CRC16Modbus(time);
+    const data = [47, 63, 33, 13, 10]
+    const commandStart = Buffer.from(data, 'ascii');
+    console.log(decToHex([47, 63, 33, 13, 10]))
 
     port.open();
     port.once('open', () => {
-        port.write(startCommand);
+        port.write(commandStart);
         port.once('data', x => {
+            console.log(x)
             port.close();
-            port.once('close', () => {
-                port.open();
-                port.once('open', () => {
-                    port.write(verifyCommand);
-                    port.once('data', y => {
-                        port.close();
-                        port.once('close', () => {
-                            port.open();
-                            port.once('open', () => {
-                                port.write(requestCommand);
-                                port.once('data', z => {
-                                    console.log(z, 'z');
-                                    res.json({ data: z });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
+            res.json({data: x.toString()})
         });
     });
 };

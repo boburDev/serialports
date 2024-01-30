@@ -19,5 +19,5 @@ function decimalToHex(d, padding) {
         return hex
     }
 }
-
+ 
 module.exports = decimalToHex
