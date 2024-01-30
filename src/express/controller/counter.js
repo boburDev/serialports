@@ -20,20 +20,33 @@ const port = new SerialPort({
     parity: 'even',
     autoOpen: false
 });
-
 const parser = new ReadlineParser();
 const getMeterData = (req, res) => {
-    const data = [47, 63, 33, 13, 10]
-    const commandStart = Buffer.from(data, 'ascii');
-    console.log(decToHex([47, 63, 33, 13, 10]))
+    const data1 = [47, 63, 33, 13, 10]
+    const data2 = [6, 48, 53, 49, 13, 10]
+    const data3 = [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3, 33]
+
+    const DATA1 = Buffer.from(data1, 'ascii');
+    const DATA2 = Buffer.from(data2, 'ascii');
+    const DATA3 = Buffer.from(data3, 'ascii');
+    // console.log(decToHex(data1))
+    // console.log(decToHex(data2))
 
     port.open();
     port.once('open', () => {
-        port.write(commandStart);
-        port.once('data', x => {
-            console.log(x)
+        port.write(DATA1);
+        port.once('data', () => {
             port.close();
-            res.json({data: x.toString()})
+            port.once('close', ()=>{
+                port.open()
+                port.once('open', () =>{
+                    port.write(DATA2)
+                    port.once('data', x => {
+                        console.log(x)
+                        res.json({ data: x.toString() })
+                    })
+                })
+            })
         });
     });
 };
