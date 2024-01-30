@@ -1,3 +1,5 @@
+module.exports = sumOfHex;
+
 function sumOfHex(hexArray) {
     let data = verificationArray(hexArray);
     const sumDecimal = data.reduce((acc, hexNumber) => {
@@ -10,6 +12,7 @@ function sumOfHex(hexArray) {
 
     return sumDecimal.toString(16).toUpperCase();
 }
+
 
 function verificationArray(data) {
     let soh = '01';
@@ -26,7 +29,3 @@ function verificationArray(data) {
     }
     return data.splice(0, +x + 1);
 }
-
-
-
-module.exports = sumOfHex;
