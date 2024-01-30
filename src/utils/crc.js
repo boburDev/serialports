@@ -15,8 +15,7 @@ function calcCRC8(hexString) {
     const paddedBinaryString = binaryString.padStart(hexString.length * 4, '0');
     const last7Bits = paddedBinaryString.slice(-7);
     const hexResult = parseInt(last7Bits, 2).toString(16).toUpperCase();
-
-    return hexResult;
+    return parseInt(hexResult, 16);
 }
 
 
