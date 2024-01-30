@@ -44,6 +44,7 @@ const getMeterData = (req, res) => {
                         port.close()
                         port.once('close', ()=>{
                             port.open()
+                            console.log('okokok')
                             port.once('open', () => {
                                 port.write(DATA3)
                                 port.once('data', volta => {
