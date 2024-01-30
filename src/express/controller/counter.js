@@ -2,6 +2,8 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 const decToHex = require('../../utils/convertor.js')
 const { CRC8 } = require('../../utils/crc.js')
+const getData = require('../../utils/serialport_connection.js')
+
 const port = new SerialPort({ 
     path: 'COM5',
     baudRate: 9600,
@@ -31,6 +33,15 @@ const getMeterData = (req, res) => {
     const DATA4 = Buffer.from(data4, 'ascii');
     const DATA5 = Buffer.from(data5, 'ascii');
 
+    // const query = [
+    //     {connect: DATA1 },
+    //     {connect_open: DATA2 },
+    //     {volta: DATA3 },
+    //     {voltl: DATA4 },
+    //     {freq: DATA5 }
+    // ]
+    // getData(query, port, res)
+
     port.open();
     port.once('open', () => {
         port.write(DATA1);
@@ -48,28 +59,8 @@ const getMeterData = (req, res) => {
                                 port.write(DATA3)
                                 port.once('data', volta => {
                                     port.close()
-                                    port.once('close', ()=>{
-                                        port.open()
-                                        port.once('open', () => {
-                                            port.write(DATA4)
-                                            port.once('data', voltl => {
-                                                port.close()
-                                                port.once('close', ()=>{
-                                                    port.open()
-                                                    port.once('open', () => {
-                                                        port.write(DATA5)
-                                                        port.once('data', freq => {
-                                                            port.close()
-                                                            console.log(volta, voltl, freq)
-                                                            // let data = x.toString()
-                                                            // let result = getValuesFromParentheses(data)
-                                                            res.json({ data: false || 'result' })
-                                                        })
-                                                    })
-                                                })            
-                                            })
-                                        })
-                                    })
+                                    console.log(volta)
+                                    res.send('ok')
                                 })
                             })
                         })
@@ -104,3 +95,36 @@ function getValuesFromParentheses(param) {
     };
     return result
 }
+
+
+
+
+// port.open();
+//     port.once('open', () => {
+//         port.write(DATA1);
+//         port.once('data', () => {
+//             port.close();
+//             port.once('close', ()=>{
+//                 port.open()
+//                 port.once('open', () =>{
+//                     port.write(DATA2)
+//                     port.once('data', () => {
+//                         port.close()
+//                         port.once('close', ()=>{
+//                             port.open()
+//                             port.once('open', () => {
+//                                 port.write(DATA3)
+//                                 port.once('data', volta => {
+//                                     port.close()
+//                                     let data = volta.toString()
+//                                     let result = getValuesFromParentheses(data)
+//                                     console.log(result)
+//                                     res.json({ data: false || 'result' })
+//                                 })
+//                             })
+//                         })
+//                     })
+//                 })
+//             })
+//         })
+//     })
