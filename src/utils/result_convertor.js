@@ -3,7 +3,7 @@ module.exports = getValuesFromParentheses
 
 function getValuesFromParentheses(param, key) {
 	// if (key == 'time') {console.log(param)}
-	console.log(param)
+	// console.log(param)
 		let sum = ''    
 	for(let i of param) {
 		if (i == 0 || (i == '.' || !!Number(i) || i == ')')) {

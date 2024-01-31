@@ -12,6 +12,7 @@ function CRC16Modbus(params) {
 
 // energomera, ...
 function CRC8(params) {
+    // console.log(sumOfDecimal(params), params)
     const binaryString = sumOfDecimal(params).toString(2);
     const paddedBinaryString = binaryString.padStart(
         sumOfHex(params).length * 4,
