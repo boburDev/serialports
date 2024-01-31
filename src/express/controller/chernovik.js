@@ -32,3 +32,54 @@
                 //         })
                 //     })
                 // })
+
+
+// function getValuesFromParentheses(param) {
+//     let sum = ''    
+//     for(let i of param) {
+//         if (i == '.' || !!Number(i) || i == ')') {
+//             if (i == ')') {
+//                 sum += ','
+//             } else {
+//                 sum += i
+//             }
+//         }
+//     }
+
+//     let matches = sum.split(',')
+//     const result = {
+//         Ua: matches[0] || "0",
+//         Ub: matches[1] || "0",
+//         Uc: matches[2] || "0",
+//     };
+//     return result
+// }
+
+
+//     port.open();
+//     port.once('open', () => {
+//         port.write(DATA1);
+//         port.once('data', () => {
+//             port.close();
+//             port.once('close', ()=>{
+//                 port.open()
+//                 port.once('open', () =>{
+//                     port.write(DATA2)
+//                     port.once('data', () => {
+//                         port.close()
+//                         port.once('close', ()=>{
+//                             port.open()
+//                             port.once('open', () => {
+//                                 port.write(DATA3)
+//                                 port.once('data', volta => {
+//                                     port.close()
+//                                     console.log(volta)
+//                                     res.send('ok')
+//                                 })
+//                             })
+//                         })
+//                     })
+//                 })
+//             })
+//         })
+//     })
