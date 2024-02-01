@@ -5,6 +5,7 @@ const getData = require('../../utils/serialport_connection.js')
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 
+
 const getMeterData = (req, res) => {
 
     const port = new SerialPort({ 
@@ -13,9 +14,10 @@ const getMeterData = (req, res) => {
         dataBits: 7,
         stopBits: 1,
         parity: 'even',
-        autoOpen: false
-    });
-    const parser = new ReadlineParser();
+        autoOpen: false,
+        usePromises: true
+    }).setEncoding()
+    const parser = new ReadlineParser({ delimiter: '\r', encoding: 'ascii' });
 
 
     const connect = [47, 63, 33, 13, 10]
@@ -43,7 +45,7 @@ const getMeterData = (req, res) => {
     const positiveATarif2 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 50, 41, 3]
     const positiveATarif3 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 52, 41, 3]
     const positiveATarif4 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 56, 41, 3]
-    
+
     const negativeATarif1 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 49, 41, 3]
     const negativeATarif2 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 50, 41, 3]
     const negativeATarif3 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 52, 41, 3]
@@ -54,10 +56,10 @@ const getMeterData = (req, res) => {
     // let data6 = [...closePort, CRC8(closePort)]
 
 
-
+    // console.log(decToHex(connect))
     const CONNECT = Buffer.from(connect, 'ascii');
     const CONNECT_OPEN = Buffer.from(connect_open, 'ascii');
-    const PASSWORD = Buffer.from(password, 'ascii');
+    const PASSWORD = Buffer.from([...   password, CRC8(password)], 'ascii');
     const VOLTA = Buffer.from([...dataVolta, CRC8(dataVolta)], 'ascii');
     const VOLTL = Buffer.from([...dataVoltL, CRC8(dataVoltL)], 'ascii');
     // const CURRE = Buffer.from([...curre, CRC8(curre)], 'ascii');
