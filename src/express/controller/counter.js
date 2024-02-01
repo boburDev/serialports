@@ -8,7 +8,7 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 const getMeterData = (req, res) => {
 
     const port = new SerialPort({ 
-        path: 'COM5',
+        path: 'COM8',
         baudRate: 9600,
         dataBits: 7,
         stopBits: 1,
