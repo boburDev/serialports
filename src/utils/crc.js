@@ -17,12 +17,20 @@ function CRC8(params) {
     const paddedBinaryString = binaryString.padStart(
         sumOfHex(params).length * 4,
         '0'
-    );
+        );
     const last7Bits = paddedBinaryString.slice(-7);
     return parseInt(last7Bits, 2);
+}
+
+function queryMaker(data, crc, type) {
+    if (crc == true) {
+        return Buffer.from([...   data, CRC8(data)], 'ascii');
+    }
+    return Buffer.from(data, 'ascii')
 }
 
 module.exports = {
     CRC16Modbus,
     CRC8,
+    queryMaker
 };

@@ -37,20 +37,21 @@ const getMeterData = (req, res) => {
     const dateTime = [1, 82, 49, 2, 87, 65, 84, 67, 72, 40, 41, 3]
 
     const positiveA = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 70, 41, 3]
-    const negativeA = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 70, 41, 3]
     const positiveR = [1, 82, 49, 2, 69, 77, 68, 48, 51, 40, 48, 46, 48, 44, 70, 41, 3]
+    const negativeA = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 70, 41, 3]
     const negativeR = [1, 82, 49, 2, 69, 77, 68, 48, 52, 40, 48, 46, 48, 44, 70, 41, 3]
 
     const positiveATarif1 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 49, 41, 3]
     const positiveATarif2 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 50, 41, 3]
     const positiveATarif3 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 52, 41, 3]
     const positiveATarif4 = [1, 82, 49, 2, 69, 77, 68, 48, 49, 40, 48, 46, 48, 44, 56, 41, 3]
+    
+    const positiveRTarif1 = [1, 82, 49, 2, 69, 77, 68, 48, 51, 40, 48, 46, 48, 44, 49, 41, 3]
 
     const negativeATarif1 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 49, 41, 3]
     const negativeATarif2 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 50, 41, 3]
     const negativeATarif3 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 52, 41, 3]
     const negativeATarif4 = [1, 82, 49, 2, 69, 77, 68, 48, 50, 40, 48, 46, 48, 44, 56, 41, 3]
-    const positiveRTarif1 = [1, 82, 49, 2, 69, 77, 68, 48, 51, 40, 48, 46, 48, 44, 49, 41, 3]
 
     // const closePort = [1, 66, 48, 3] // frequency
     // let data6 = [...closePort, CRC8(closePort)]
@@ -113,3 +114,42 @@ const getMeterData = (req, res) => {
 
 
 module.exports = getMeterData;
+
+
+
+
+const openPort = () => {
+    return new Promise((resolve, reject) => {
+        port.open(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const writeToPort = data => {
+    return new Promise((resolve, reject) => {
+        port.write(data, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const closePort = () => {
+    return new Promise((resolve, reject) => {
+        port.close(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};

@@ -1,57 +1,101 @@
-const getValuesFromParentheses = require('./result_convertor.js')
-const {CRC8} = require('./crc.js')
-const decimalToHex = require('./convertor.js')
-function getData (args, port, res, data=[]) {
+const { SerialPort } = require('serialport');
+const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeout');
+
+const { SerialPortConfig } = require('../config.js')
+const { queryMaker, CRC8 } = require('./crc.js')
+
+const port = new SerialPort(SerialPortConfig);
+const parser = port.pipe(
+    new InterByteTimeoutParser({
+        interval: 300,
+        maxBufferSize: 10000
+    }));
+
+const openPort = () => {
+    return new Promise((resolve, reject) => {
+        port.open(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const writeToPort = (data) => {
+    return new Promise((resolve, reject) => {
+        port.write(data, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const closePort = () => {
+    return new Promise((resolve, reject) => {
+        port.close(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const waitForData = (timeout = 1600) => {
+    return new Promise((resolve, reject) => {
+        const dataHandler = data => {
+            resolve(data);
+        }
+        parser.once('data', dataHandler);
+
+        const func = () => {
+            port.removeListener('data', dataHandler);
+            reject(new Error('Timeout waiting for data'));
+        };
+
+        const timeoutId = setTimeout(() => {
+            func();
+            clearTimeout(timeoutId, func());
+        }, timeout);
+    });
+};
+
+
+async function getData (data, crc=true) {
+    try {
+        data = queryMaker(data, crc)
+
+        await writeToPort(data)
+        let result = await waitForData()
+        return result.toString().trim()
+    } catch (err) {
+        console.log('Error in serialport connection file', err.message)
+    }
+}
+
+
+
+
+async function getDataByRecursion (args, port, res, data=[]) {
     try {
         let result = [...data]
         let arg = Object.values(args[0])[0]
         let key = Object.keys(args[0])[0]
-
-        port.open()
-        port.once('open', () => {
-            port.write(arg)
-            port.once('data', (response) => {
-                console.log(response.toString());
-                port.close()
-                console.log(port.read(response.length), response.length)
-                let resultDec = [...response]
-                // console.log(decimalToHex(resultDec), decimalToHex([...arg]))
-                // console.log([...arg], resultDec, '1111111111')
-                let crc = resultDec.pop()
-                // console.log(resultDec, CRC8(resultDec), crc, '22222222\n\n\n\n\n\n\n\n\n\n\n')
-                let newArgs = args.shift()
-                if (args.length !== 0) {
-                    if (!['connect', 'connect_open', 'password'].includes(key)) {
-                        result.push({ [key]: response.toString()})
-                        // result.push({ [key]: getValuesFromParentheses(response.toString(), key)})
-                    }
-                    setTimeout(() => getData(args, port, res, result), 100)
-                } else {
-                    result.push({ [key]: response.toString()})
-                    // result.push({ [key]: getValuesFromParentheses(response.toString(), key)})
-                    res.json({ data: result, status: 200, error: null })
-                }
-                port.once('close', error => {
-
-                    if (error) {
-                        console.log('port closed', error)
-                    }
-                })
-            })
-        })
+        
     } catch (err) {
-        console.log("error: error in getData file", err)
-    }
-} 
+        console.log("error: error in getDataByRecursion file", err)
+    } 
+}
 
-
-
-
-module.exports = getData
-
-
-function sleep(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
+module.exports = {
+    openPort,
+    closePort,
+    getDataByRecursion,
+    getData
 }
