@@ -10,18 +10,22 @@ module.exports = {
             { 'version': q.version, crc: false },
             { 'hashedPassword': q.hashedPassword, crc: false },
             { 'password': q.password },
-            { 'volta': q.currentData.volta },
-            { 'voltl': q.currentData.voltl },
-            { 'frequency': q.currentData.frequency },
-            { 'current': q.currentData.current },
-            { 'powp': q.currentData.powp },
-            { 'powq': q.currentData.powq },
-            { 'pows': q.currentData.pows },
-            { 'coriu': q.currentData.coriu },
-            { 'coruu': q.currentData.coruu },
-            { 'cosf': q.currentData.cosf },
-            { 'tanf': q.currentData.tanf },
-            { 'currentDate': q.currentDate },
+            // { 'volta': q.currentData.volta },
+            // { 'voltl': q.currentData.voltl },
+            // { 'frequency': q.currentData.frequency },
+            // { 'current': q.currentData.current },
+            // { 'powp': q.currentData.powp },
+            // { 'powq': q.currentData.powq },
+            // { 'pows': q.currentData.pows },
+            // { 'coriu': q.currentData.coriu },
+            // { 'coruu': q.currentData.coruu },
+            // { 'cosf': q.currentData.cosf },
+            // { 'tanf': q.currentData.tanf },
+            // { 'currentDate': q.currentDate },
+            // {'positiveA': q.currentData.positive.A.all},
+            // {'positiveASum': q.currentData.positive.A.sum},
+            // {'postiveR': q.currentData.positive.R.all},
+            {'postiveRSum': q.currentData.positive.R.sum},
             { 'closeCommand': q.closeCommand },
             ]
 
@@ -31,9 +35,8 @@ module.exports = {
         let result1 = await getData(requests[0], false)
         let result2 = await getData(requests[1], false)
         let result3 = await getData(requests[2])
-        let result4 = await getData(requests[13])
-        // await getData(requests[requests.length-1])
-        await closePort()
+        let result4 = await getData(requests[3])
+        await getData(requests[requests.length-1])
         res.json({ data: {result1, result4}, status: 200 })
     }
 }
