@@ -1,19 +1,16 @@
 const { getData, openPort, closePort } = require('../../utils/serialport_connection')
-const queries = require('../../queries/energomera_query.json')
+const { makeQuery } = require('../../utils/makeQuery.js')
 
 
 module.exports = {
 	GET: async(req,res) => {
-        let { Reading: data } = {Reading: ["1.0.0", "1.0.1", "1.0.2"]}
-        let query = data.map(i => i.replace('_', '.').replace(' ', '.'))
+        let { Reading: data } = {Reading: ["1.0.0", "1.4", "1.5"]}
+        
+        let queries = await makeQuery(data)
+        setTimeout(()=>console.log(queries, 123), 1000)
+
         
 
-
-
-        const q = queries[0]
-        const requests = query.map(i => {
-            console.log(q['currentData']['volta'])
-        })
         // console.log(q)
         // console.log(Object.keys(q))
         // console.loq(req.body)
