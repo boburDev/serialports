@@ -131,6 +131,9 @@ const getMeterData = async (req, res) => {
         await writeToPort(getPositiveA);
         const positiveA = await waitForData();
 
+        await writeToPort(getVoltA);
+
+
         // Close the port
         await closePort();
 

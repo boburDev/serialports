@@ -32,7 +32,7 @@ module.exports = {
         let result2 = await getData(requests[1], false)
         let result3 = await getData(requests[2])
         let result4 = await getData(requests[13])
-        // await getData(requests[requests.length-1])
+        await getData(requests[requests.length-1])
         await closePort()
         res.json({ data: {result1, result4}, status: 200 })
     }

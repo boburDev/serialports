@@ -75,6 +75,7 @@ async function getData (data, crc=true) {
         let key = Object.keys(data)[0]
         let value = Object.values(data)[0]
         let dataReq = queryMaker(value, crc)
+        console.log(dataReq, key)
         await writeToPort(dataReq)
         if (key != 'closeCommand') {
             let result = await waitForData()
