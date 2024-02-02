@@ -4,6 +4,9 @@ const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeou
 const { SerialPortConfig } = require('../config.js')
 const { queryMaker, CRC8 } = require('./crc.js')
 
+const { getCurrentDataValues } = require('./convertor.js')
+
+
 const port = new SerialPort(SerialPortConfig);
 const parser = port.pipe(
     new InterByteTimeoutParser({
@@ -71,13 +74,18 @@ async function getData (data, crc=true) {
     try {
         let key = Object.keys(data)[0]
         let value = Object.values(data)[0]
-        let result
-        // console.log(key, value)
-        let dataRes = queryMaker(value, crc)
-        await writeToPort(dataRes)
-        result = await waitForData()
-        console.log(result.toString())
-        // return result.toString().trim()
+        let dataReq = queryMaker(value, crc)
+        await writeToPort(dataReq)
+        if (key != 'closeCommand') {
+            let result = await waitForData()
+            if (!['hashedPassword', 'password'].includes(key)) {
+                if (key == 'version' || key == 'tanf') {
+                    // console.log([...result], result, result.toString(), key)
+                }
+                return getCurrentDataValues(result.toString(), key)
+            }
+            return 'success'
+        }
     } catch (err) {
         console.log('Error in serialport connection file', err.message)
     }
