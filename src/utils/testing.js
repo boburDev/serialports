@@ -1,39 +1,27 @@
-let inputValue = `
+// function decimalToHex(d, padding) {
+//     if (Array.isArray(d)) {
+//         return d.map(value => {
+//             var hex = Number(value).toString(16);
+//             padding =
+//                 typeof padding === 'undefined' || padding === null
+//                     ? (padding = 2)
+//                     : padding;
 
-2 
-86 
-79 
-76 
-84 
-65 
-40 
-48 
-46 
-48 
-41 
-13 
-10 
-40 
-48 
-46 
-48 
-41 
-13 
-10 
-40 
-49 
-56 
-57 
-46 
-48 
-54 
-50 
-41 
-13 
-10 
-3 
-69
+//             while (hex.length < padding) {
+//                 hex = '0' + hex;
+//             }
+//             return hex;
+//         });
+//     } else {
+//         var hex = Number(d).toString(16);
+//         padding =
+//             typeof padding === 'undefined' || padding === null
+//                 ? (padding = 2)
+//                 : padding;
 
-
-`.split('\n').join('').split(' ').join(', ')
-// console.log(inputValue);
+//         while (hex.length < padding) {
+//             hex = '0' + hex;
+//         }
+//         return hex;
+//     }
+// }
