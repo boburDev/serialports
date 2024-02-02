@@ -1,3 +1,8 @@
+module.exports = {
+    decimalToHex
+}
+
+
 function decimalToHex(d, padding) {
     if (Array.isArray(d)) {
         return d.map(value => {
@@ -19,5 +24,3 @@ function decimalToHex(d, padding) {
         return hex
     }
 }
- 
-module.exports = decimalToHex

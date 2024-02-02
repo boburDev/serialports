@@ -76,7 +76,6 @@ async function getData (data, crc=true) {
         let dataRes = queryMaker(value, crc)
         await writeToPort(dataRes)
         result = await waitForData()
-        
         console.log(result.toString())
         // return result.toString().trim()
     } catch (err) {
