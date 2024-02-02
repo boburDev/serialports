@@ -1,9 +1,3 @@
-module.exports = {
-    decimalToHex,
-    getCurrentDataValues,
-    createResultA_R,
-};
-
 function getCurrentDataValues(value, key) {
     var reBrackets = /\((.*?)\)/g;
     var sortedData = [];
@@ -107,6 +101,28 @@ function createResultA_R(param) {
     return result;
 }
 
+function getProfile(param) {
+    const result = {};
+    param = param.toString();
+    const values = getValuesFromParentheses(param);
+    result['date'] = values[0].split(',')[0];
+    result['values'] = [
+        values[0].split(',')[1],
+        ...values.slice(1, values.length),
+    ];
+
+    return result;
+}
+
+function getListOfDays(param) {
+    param = param.toString();
+    return getValuesFromParentheses(param);
+}
+
+function returnValue(value) {
+    return ['', '.'].includes(value) ? '0.0' : value;
+}
+
 function getValuesFromParentheses(inputString) {
     const regex = /\(([^)]+)\)/g;
     const matches = [];
@@ -119,34 +135,7 @@ function getValuesFromParentheses(inputString) {
     return matches;
 }
 
-function decimalToHex(d, padding) {
-    if (Array.isArray(d)) {
-        return d.map(value => {
-            var hex = Number(value).toString(16);
-            padding =
-                typeof padding === 'undefined' || padding === null
-                    ? (padding = 2)
-                    : padding;
-
-            while (hex.length < padding) {
-                hex = '0' + hex;
-            }
-            return hex;
-        });
-    } else {
-        var hex = Number(d).toString(16);
-        padding =
-            typeof padding === 'undefined' || padding === null
-                ? (padding = 2)
-                : padding;
-
-        while (hex.length < padding) {
-            hex = '0' + hex;
-        }
-        return hex;
-    }
-}
-
-function returnValue(value) {
-    return ['', '.'].includes(value) ? '0.0' : value;
-}
+module.exports = {
+    getCurrentDataValues,
+    createResultA_R,
+};
