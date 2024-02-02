@@ -69,11 +69,12 @@ const waitForData = (timeout = 1600) => {
 
 async function getData (data, crc=true) {
     try {
-        data = queryMaker(data, crc)
+        console.log(data, crc)
+        // data = queryMaker(data, crc)
 
-        await writeToPort(data)
-        let result = await waitForData()
-        return result.toString().trim()
+        // await writeToPort(data)
+        // let result = await waitForData()
+        // return result.toString().trim()
     } catch (err) {
         console.log('Error in serialport connection file', err.message)
     }
@@ -82,20 +83,28 @@ async function getData (data, crc=true) {
 
 
 
-async function getDataByRecursion (args, port, res, data=[]) {
-    try {
-        let result = [...data]
-        let arg = Object.values(args[0])[0]
-        let key = Object.keys(args[0])[0]
-        
-    } catch (err) {
-        console.log("error: error in getDataByRecursion file", err)
-    } 
-}
-
 module.exports = {
     openPort,
     closePort,
-    getDataByRecursion,
     getData
+}
+
+
+
+
+function getVersionSubstring(str) {
+    let check = ''
+    for(let i in str) {
+        if (str[i] == 2 || str[i] == 3) {
+            check += `${i},`
+        }
+    }
+    let x = check.split(',').filter(i => i)
+    let result = ''
+    for(let i in str) {
+        if (i > +x[0] && i < +x[x.length-1]) {
+            result += str[i]
+        }
+    }
+    return result
 }
