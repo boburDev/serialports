@@ -74,20 +74,19 @@ async function getData (data, crc=true) {
     try {
         let key = Object.keys(data)[0]
         let value = Object.values(data)[0]
-        let dataReq = queryMaker(value, crc)
-        console.log(dataReq, key)
-        await writeToPort(dataReq)
-        if (key != 'closeCommand') {
+        let dataReq = queryMaker([...value], data.crc == undefined ? true : false)
+
+        if (key == 'closeCommand') {
+            await writeToPort(dataReq)
+        } else if (key != 'closeCommand') {
+            await writeToPort(dataReq)
             let result = await waitForData()
             if (!['hashedPassword', 'password'].includes(key)) {
-                if (key == 'version' || key == 'tanf') {
-                    // console.log([...result], result, result.toString(), key)
-                }
                 return getCurrentDataValues(result.toString(), key)
             }
-            return 'success'
         }
     } catch (err) {
+        await closePort()
         console.log('Error in serialport connection file', err.message)
     }
 }

@@ -24,9 +24,11 @@ function CRC8(params) {
 
 function queryMaker(data, crc, type) {
     if (crc == true) {
-        return Buffer.from([...   data, CRC8(data)], 'ascii');
+        return Buffer.from([...data, CRC8(data)], 'ascii')
+    } else if (crc == false) {
+        return Buffer.from(data, 'ascii')
     }
-    return Buffer.from(data, 'ascii')
+    
 }
 
 module.exports = {

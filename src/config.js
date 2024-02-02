@@ -1,5 +1,5 @@
 const SerialPortConfig = {
-    path: 'COM8',
+    path: 'COM5',
     baudRate: 9600,
     dataBits: 7,
     stopBits: 1,
