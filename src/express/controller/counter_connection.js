@@ -27,11 +27,9 @@ module.exports = {
 
         await openPort()
         
-        for (let i of requests) {
-            console.log(i)
-            // getData(i)
-        }
+        getData(requests[0])
 
+        // await closePort()
         res.json({ data: null, status: 200 })
     }
 }

@@ -69,11 +69,15 @@ const waitForData = (timeout = 1600) => {
 
 async function getData (data, crc=true) {
     try {
-        console.log(data, crc)
-        // data = queryMaker(data, crc)
-
-        // await writeToPort(data)
-        // let result = await waitForData()
+        let key = Object.keys(data)[0]
+        let value = Object.values(data)[0]
+        let result
+        // console.log(key, value)
+        let dataRes = queryMaker(value, crc)
+        await writeToPort(dataRes)
+        result = await waitForData()
+        
+        console.log(result.toString())
         // return result.toString().trim()
     } catch (err) {
         console.log('Error in serialport connection file', err.message)
