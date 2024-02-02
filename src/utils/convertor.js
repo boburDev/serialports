@@ -83,19 +83,19 @@ function getCurrentDataValues(value, key) {
     }
 }
 
-function createResultA_R(param) {
+function createResultA_R(param, key) {
     param = param.toString();
-    const result = {};
+    const result = { key: {} };
     const values = getValuesFromParentheses(param);
-    result['date'] = values[0].split(',')[0];
-    result['sum'] = values[0].split(',')[1];
+    result[key]['date'] = values[0].split(',')[0];
+    result[key]['sum'] = values[0].split(',')[1];
     if (values.length === 2) {
-        result['tarif'] = values[1];
+        result[key]['tarif'] = values[1];
     } else if (values.length === 5) {
-        result['tarif1'] = values[1];
-        result['tarif2'] = values[2];
-        result['tarif3'] = values[3];
-        result['tarif4'] = values[4];
+        result[key]['tarif1'] = values[1];
+        result[key]['tarif2'] = values[2];
+        result[key]['tarif3'] = values[3];
+        result[key]['tarif4'] = values[4];
     }
 
     return result;
@@ -138,4 +138,5 @@ function getValuesFromParentheses(inputString) {
 module.exports = {
     getCurrentDataValues,
     createResultA_R,
+    getProfile,
 };
