@@ -9,7 +9,7 @@ module.exports = {
     GET: async (req, res) => {
         let { Reading: data } = { Reading: ['0.0', '0.1', '0.2', '1.4', '1.0.0'] };
         let queries = makeQuery(data);
-        console.log(queries)
+        // console.log(queries)
 
         // console.log(q)
         // console.log(Object.keys(q))
