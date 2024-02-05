@@ -1,4 +1,5 @@
 function getCurrentDataValues(value, key) {
+    console.log(key, value)
     var reBrackets = /\((.*?)\)/g;
     var sortedData = [];
     var found;
@@ -78,8 +79,7 @@ function getCurrentDataValues(value, key) {
         let today = sortedData[0].split(',');
         return { today: `${today[0]} ${today[1].replace('.', '/')}` };
     } else if (key == 'version') {
-        let version = value.split('/EMR5\\2')[1].split('\r\n')[0];
-        return { version };
+        return { version: value };
     } else if (['positiveA', 'positiveR', 'negativeA', 'negativeR'].includes(key.split('.')[0])) {
         return createResultA_R(value, key)
     } else {

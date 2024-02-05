@@ -1,0 +1,5 @@
+errors
+	
+	1.5 --> error12 = voltL
+	1.10 --> error12 = powS
+	1.15 --> error12 = time

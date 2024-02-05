@@ -25,3 +25,20 @@
 //         return hex;
 //     }
 // }
+
+let x = `
+47 
+63 
+49 
+55 
+49 
+33 
+13 
+10
+`.trim().split(' \n')
+let data = []
+for(let i of x) {
+	data.push(+i)
+}
+
+console.log(data)

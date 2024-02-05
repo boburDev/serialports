@@ -1,4 +1,5 @@
-const queries = require('../queries/energomera_query_CE308.json');
+const queries_CE308 = require('../queries/energomera_query_CE308.json');
+const queries_CE303 = require('../queries/energomera_query_CE303.json');
 
 module.exports = { makeQuery };
 
@@ -18,7 +19,7 @@ function makeQuery(data, setup) {
 }
 
 function getRequest(argument) {
-    const q = queries[0];
+    const q = queries_CE303[0];
     let dataR = {};
     let dataY = '';
     let data = argument.split('.');

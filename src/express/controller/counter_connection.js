@@ -33,6 +33,7 @@ module.exports = {
         const queries = makeQuery(reqData.ReadingRegistor, setUp)
         let result = [];
         await openPort(port);
+
         for (let request of queries) {
             let data = await getData(request, port);
             if (data) {

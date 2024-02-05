@@ -56,7 +56,6 @@ const waitForData = (port, timeout = 1600) => {
         };
 
         const timeoutId = setTimeout(() => {
-            func();
             clearTimeout(timeoutId, func());
         }, timeout);
     });
@@ -78,7 +77,6 @@ async function getData (data, port, crc=true) {
             }
         }
     } catch (err) {
-        await closePort()
         console.log('Error in serialport connection file', err.message)
     }
 }
