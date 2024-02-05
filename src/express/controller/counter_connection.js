@@ -37,7 +37,7 @@ module.exports = {
         for (let request of queries) {
             let data = await getData(request, port);
             if (data) {
-                result.push({ data });
+                result.push(data);
             }
         }
         await closePort(port);

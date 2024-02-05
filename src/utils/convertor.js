@@ -1,83 +1,104 @@
 function getCurrentDataValues(value, key) {
-    console.log(key, value)
     var reBrackets = /\((.*?)\)/g;
     var sortedData = [];
     var found;
     while ((found = reBrackets.exec(value))) {
         sortedData.push(returnValue(found[1]));
     }
+    console.log(sortedData, key)
 
     if (key == 'volta') {
         return {
-            Ua: sortedData[0],
-            Ub: sortedData[1],
-            Uc: sortedData[2],
-        };
+            volta: {
+                Ua: sortedData[0] || '0.0',
+                Ub: sortedData[1] || '0.0',
+                Uc: sortedData[2] || '0.0',
+            }
+        }
     } else if (key == 'voltl') {
         return {
-            Uab: sortedData[0],
-            Ubc: sortedData[1],
-            Uca: sortedData[2],
-        };
+            voltl: {
+                Uab: sortedData[0] || '0.0',
+                Ubc: sortedData[1] || '0.0',
+                Uca: sortedData[2] || '0.0',
+            }
+        }
     } else if (key == 'frequency') {
-        return { frequ: sortedData[0] };
+        return { frequ: sortedData[0] || '0.0' };
     } else if (key == 'current') {
-        // console.log(value, sortedData)
         return {
-            Ia: sortedData[0],
-            Ib: sortedData[1],
-            Ic: sortedData[2],
+            current: {
+                Ia: sortedData[0] || '0.0',
+                Ib: sortedData[1] || '0.0',
+                Ic: sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'powp') {
         return {
-            Psum: sortedData[3],
-            Pa: sortedData[0],
-            Pb: sortedData[1],
-            Pc: sortedData[2],
+            powp: {
+                Psum: sortedData[3] || '0.0',
+                Pa: sortedData[0] || '0.0',
+                Pb: sortedData[1] || '0.0',
+                Pc: sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'powq') {
         return {
-            Qsum: sortedData[3],
-            Qa: sortedData[0],
-            Qb: sortedData[1],
-            Qc: sortedData[2],
+            powq: {
+                Qsum: sortedData[3] || '0.0',
+                Qa: sortedData[0] || '0.0',
+                Qb: sortedData[1] || '0.0',
+                Qc: sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'pows') {
         return {
-            Ssum: sortedData[3],
-            Sa: sortedData[0],
-            Sb: sortedData[1],
-            Sc: sortedData[2],
+            pows: {
+                Ssum: sortedData[3] || '0.0',
+                Sa: sortedData[0] || '0.0',
+                Sb: sortedData[1] || '0.0',
+                Sc: sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'coriu') {
         return {
-            'COS_F(a)_angle': sortedData[0],
-            'COS_F(b)_angle': sortedData[1],
-            'COS_F(c)_angle': sortedData[2],
+            coriu: {
+                'COS_F(a)_angle': sortedData[0] || '0.0',
+                'COS_F(b)_angle': sortedData[1] || '0.0',
+                'COS_F(c)_angle': sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'coruu') {
         return {
-            a_Ua_Ub: sortedData[0],
-            a_Ub_Uc: sortedData[1],
-            a_Uc_Ua: sortedData[2],
+            coruu: {
+                a_Ua_Ub: sortedData[0] || '0.0',
+                a_Ub_Uc: sortedData[1] || '0.0',
+                a_Uc_Ua: sortedData[2] || '0.0',
+            }
         };
     } else if (key == 'cosf') {
         return {
-            COS_fa: sortedData[0],
-            COS_fb: sortedData[1],
-            COS_fc: sortedData[2],
-            COS_fsum: sortedData[3],
+            cosf: {
+                COS_fa: sortedData[0] || '0.0',
+                COS_fb: sortedData[1] || '0.0',
+                COS_fc: sortedData[2] || '0.0',
+                COS_fsum: sortedData[3] || '0.0',
+            }
         };
     } else if (key == 'tanf') {
         return {
-            TAN_fa: sortedData[0],
-            TAN_fb: sortedData[1],
-            TAN_fc: sortedData[2],
-            TAN_fsum: sortedData[3],
+            tanf: {
+                TAN_fa: sortedData[0] || '0.0',
+                TAN_fb: sortedData[1] || '0.0',
+                TAN_fc: sortedData[2] || '0.0',
+                TAN_fsum: sortedData[3] || '0.0',
+            }
         };
     } else if (key == 'currentDate') {
         let today = sortedData[0].split(',');
-        return { today: `${today[0]} ${today[1].replace('.', '/')}` };
+        return {
+            today: `${today[0]} ${today[1].replace('.', '/')}`
+        };
     } else if (key == 'version') {
         return { version: value };
     } else if (['positiveA', 'positiveR', 'negativeA', 'negativeR'].includes(key.split('.')[0])) {
@@ -118,7 +139,7 @@ function getProfile(param) {
     values = [
         `${firstValue[1]},${firstValue[2]}`,
         ...values.slice(1, values.length),
-    ];
+        ];
 
     result['values'] = values.map(value => {
         const [valueRes, status] = value.split(',');
