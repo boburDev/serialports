@@ -80,12 +80,14 @@ function getCurrentDataValues(value, key) {
     } else if (key == 'version') {
         let version = value.split('/EMR5\\2')[1].split('\r\n')[0];
         return { version };
+    } else {
+        return createResultA_R(value, key)
     }
 }
 
 function createResultA_R(param, key) {
-    param = param.toString();
-    const result = { key: {} };
+    // param = param.toString();
+    const result = { [key]: {} };
     const values = getValuesFromParentheses(param);
     result[key]['date'] = values[0].split(',')[0];
     result[key]['sum'] = values[0].split(',')[1];
