@@ -80,13 +80,14 @@ function getCurrentDataValues(value, key) {
     } else if (key == 'version') {
         let version = value.split('/EMR5\\2')[1].split('\r\n')[0];
         return { version };
-    } else {
+    } else if (['positiveA', 'positiveR', 'negativeA', 'negativeR'].includes(key.split('.')[0])) {
         return createResultA_R(value, key)
+    } else {
+        return getProfile(value)
     }
 }
 
 function createResultA_R(param, key) {
-    // param = param.toString();
     const result = { [key]: {} };
     const values = getValuesFromParentheses(param);
     result[key]['date'] = values[0].split(',')[0];
@@ -110,7 +111,7 @@ function getProfile(param) {
     let to = new Date(currentTime);
 
     const result = {};
-    param = param.toString();
+
     let values = getValuesFromParentheses(param);
     const firstValue = values[0].split(',');
     result['date'] = firstValue[0];
@@ -157,7 +158,5 @@ function getValuesFromParentheses(inputString) {
 }
 
 module.exports = {
-    getCurrentDataValues,
-    createResultA_R,
-    getProfile,
+    getCurrentDataValues
 };

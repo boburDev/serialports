@@ -2,11 +2,20 @@ const queries = require('../queries/energomera_query.json');
 
 module.exports = { makeQuery };
 
-function makeQuery(data) {
-    return data.reduce((result, val) => {
-        const requestData = getRequest(val);
-        return [...result, requestData, ...makeQuery(val.children || [])];
-    }, []);
+function makeQuery(data, setup) {
+    let dataValue = ['0.0', '0.1', '0.2', ...data, '0.3',]
+    let result = []
+    for(let i of dataValue) {
+        let res = getRequest(i)
+        if (i == '0.0' && setup.adress != '') {
+            res.version = addKeyArrayToRequest(res.version, setup.adress, 2)
+        } else if (i == '0.2') {
+            res.password = addKeyArrayToRequest(res.password, setup.password, 2)
+
+        }
+        result.push(res)
+    }
+    return result
 }
 
 function getRequest(argument) {
@@ -52,3 +61,9 @@ function getRequest(argument) {
         return { [dataKey]: dataR };
     }
 }
+
+function addKeyArrayToRequest(replaceArray, addArg, index) {
+    let newArg = addArg.split ('').map (function (c) { return c.charCodeAt (0); })
+    const from = replaceArray.splice(0, index)
+    return [...from, ...newArg, ...replaceArray]
+} 

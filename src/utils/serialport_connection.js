@@ -1,20 +1,9 @@
-const { SerialPort } = require('serialport');
 const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeout');
 
-const { SerialPortConfig } = require('../config.js')
 const { queryMaker, CRC8 } = require('./crc.js')
-
 const { getCurrentDataValues } = require('./convertor.js')
 
-
-const port = new SerialPort(SerialPortConfig);
-const parser = port.pipe(
-    new InterByteTimeoutParser({
-        interval: 300,
-        maxBufferSize: 10000
-    }));
-
-const openPort = () => {
+const openPort = (port) => {
     return new Promise((resolve, reject) => {
         port.open(err => {
             if (err) {
@@ -26,7 +15,7 @@ const openPort = () => {
     });
 };
 
-const writeToPort = (data) => {
+const writeToPort = (data, port) => {
     return new Promise((resolve, reject) => {
         port.write(data, err => {
             if (err) {
@@ -38,7 +27,7 @@ const writeToPort = (data) => {
     });
 };
 
-const closePort = () => {
+const closePort = (port) => {
     return new Promise((resolve, reject) => {
         port.close(err => {
             if (err) {
@@ -50,12 +39,16 @@ const closePort = () => {
     });
 };
 
-const waitForData = (timeout = 1600) => {
+const waitForData = (port, timeout = 1600) => {
     return new Promise((resolve, reject) => {
         const dataHandler = data => {
             resolve(data);
         }
-        parser.once('data', dataHandler);
+        port.pipe(
+            new InterByteTimeoutParser({
+                interval: 300,
+                maxBufferSize: 10000
+            })).once('data', dataHandler);
 
         const func = () => {
             port.removeListener('data', dataHandler);
@@ -70,17 +63,16 @@ const waitForData = (timeout = 1600) => {
 };
 
 
-async function getData (data, crc=true) {
+async function getData (data, port, crc=true) {
     try {
         let key = Object.keys(data)[0]
         let value = Object.values(data)[0]
         let dataReq = queryMaker([...value], data.crc == undefined ? true : false)
-
         if (key == 'closeCommand') {
-            await writeToPort(dataReq)
+            await writeToPort(dataReq,port)
         } else if (key != 'closeCommand') {
-            await writeToPort(dataReq)
-            let result = await waitForData()
+            await writeToPort(dataReq,port)
+            let result = await waitForData(port)
             if (!['hashedPassword', 'password'].includes(key)) {
                 return getCurrentDataValues(result.toString(), key)
             }

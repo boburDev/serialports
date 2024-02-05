@@ -3,7 +3,7 @@
         "settings": {
             "version": [47, 63, 33, 13, 10],
             "hashedPassword": [6, 48, 53, 49, 13, 10],
-            "password": [1, 80, 49, 2, 40, 55, 55, 55, 55, 55, 55, 41, 3],
+            "password": [1, 80, 49, 2, 40, 41, 3],
             "closeCommand": [1, 66, 48, 3]
         },
         "currentData": {
