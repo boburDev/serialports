@@ -1,4 +1,4 @@
-const queries = require('../queries/energomera_query.json');
+const queries = require('../queries/energomera_query_CE308.json');
 
 module.exports = { makeQuery };
 
@@ -11,7 +11,6 @@ function makeQuery(data, setup) {
             res.version = addKeyArrayToRequest(res.version, setup.adress, 2)
         } else if (i == '0.2') {
             res.password = addKeyArrayToRequest(res.password, setup.password, 2)
-
         }
         result.push(res)
     }
@@ -64,6 +63,7 @@ function getRequest(argument) {
 
 function addKeyArrayToRequest(replaceArray, addArg, index) {
     let newArg = addArg.split ('').map (function (c) { return c.charCodeAt (0); })
-    const from = replaceArray.splice(0, index)
-    return [...from, ...newArg, ...replaceArray]
+    let newArray = [...replaceArray]
+    const from = newArray.splice(0, index)
+    return [...from, ...newArg, ...newArray]
 } 
