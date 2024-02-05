@@ -102,14 +102,33 @@ function createResultA_R(param, key) {
 }
 
 function getProfile(param) {
+    let currentTime = new Date();
+    currentTime.setHours(0, 0, 0, 0);
+    let from = new Date(currentTime);
+    let to = new Date(currentTime);
+
     const result = {};
     param = param.toString();
-    const values = getValuesFromParentheses(param);
-    result['date'] = values[0].split(',')[0];
-    result['values'] = [
-        values[0].split(',')[1],
+    let values = getValuesFromParentheses(param);
+    const firstValue = values[0].split(',');
+    result['date'] = firstValue[0];
+    values = [
+        `${firstValue[1]},${firstValue[2]}`,
         ...values.slice(1, values.length),
     ];
+
+    result['values'] = values.map(value => {
+        const [valueRes, status] = value.split(',');
+        to.setMinutes(to.getMinutes() + 30);
+        const response = {
+            valueRes,
+            status,
+            from: `${from.getHours()}:${from.getMinutes()}`,
+            to: `${to.getHours()}:${to.getMinutes()}`,
+        };
+        from = new Date(to);
+        return response;
+    });
 
     return result;
 }
