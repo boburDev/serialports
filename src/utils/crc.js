@@ -28,11 +28,8 @@ function queryMaker(data, crc, type) {
     } else if (crc == false) {
         return Buffer.from(data, 'ascii')
     }
-    
 }
 
 module.exports = {
-    CRC16Modbus,
-    CRC8,
     queryMaker
 };

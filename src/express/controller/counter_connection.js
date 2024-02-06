@@ -25,12 +25,10 @@ module.exports = {
     },
     POST: async (req, res) => {
         let reqData = req.body
-        const setUp = {
-            adress: reqData.MeterAdress,
-            password: reqData.MeterPassword
-        }
-        const port = new SerialPort(serialPortConfig(reqData))
-        const queries = makeQuery(reqData.ReadingRegistor, setUp)
+
+        let configuration = serialPortConfig(reqData)
+        const port = new SerialPort(configuration.SerialPort)
+        const queries = makeQuery(reqData.ReadingRegistor, configuration.setUp)
         let result = [];
         await openPort(port);
 
@@ -48,11 +46,19 @@ module.exports = {
 
 function serialPortConfig(reqData) {
     return {
-        path: reqData.commDetail1 || 'COM6',
-        baudRate: reqData.commDetail2 || 9600,
-        dataBits: reqData.dataBit || 8,
-        stopBits: reqData.stopBit || 1,
-        parity: reqData.parity || 'none',
-        autoOpen: false
+        SerialPort: {
+            path: reqData.commDetail1 || 'COM6',
+            baudRate: reqData.commDetail2 || 9600,
+            dataBits: reqData.dataBit || 8,
+            stopBits: reqData.stopBit || 1,
+            parity: reqData.parity || 'none',
+            autoOpen: false
+        },
+        setUp: {
+            adress: reqData.MeterAdress,
+            password: reqData.MeterPassword,
+            meterType: reqData.MeterType
+
+        }
     }
 }
