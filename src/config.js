@@ -1,12 +1,19 @@
-const SerialPortConfig = {
-    path: 'COM6',
-    baudRate: 9600,
-    dataBits: 7,
-    stopBits: 1,
-    parity: 'even',
-    autoOpen: false
-}
+const setConfig = (reqData) => ({
+        SerialPort: {
+            path: reqData.commDetail1 || null,
+            baudRate: reqData.commDetail2 || null,
+            dataBits: reqData.dataBit || null,
+            stopBits: reqData.stopBit || null,
+            parity: reqData.parity || null,
+            autoOpen: false
+        },
+        setUp: {
+            adress: reqData.MeterAdress || '',
+            password: reqData.MeterPassword || null,
+            meterType: reqData.MeterType || null
+        }
+    })
 
 module.exports = {
-	SerialPortConfig
+	setConfig
 }

@@ -1,13 +1,27 @@
 const queries_CE308 = require('../queries/energomera_query_CE308.json');
-// const queries_CE303 = require('../queries/energomera_query_CE303.json');
+const queries_CE303 = require('../queries/energomera_query_CE303.json');
 // const queries_CE102M = require('../queries/energomera_query_CE102M.json');
 
-module.exports = { makeQuery };
+module.exports = { makeQuery, addKeyArrayToRequest };
 
-function makeQuery(data, options) {
-    let dataValue = ['0.0', '0.1', '0.2', ...data, '0.3']
+function makeQuery(data, options, lstData) {
+    let dataValue = []
+    if (!data && data != null) {
+        dataValue = ['0.0', '0.1', '0.2', '0.3']
+        return collectRequest(dataValue, options)
+    } else if (data == null) {
+        dataValue = ['0.0', '0.1', '0.2', '0.4', '0.3']
+        return collectRequest(dataValue, options)
+    }  else {
+        dataValue = data
+        return collectRequest(dataValue, options)
+    }
+    return result
+}
+
+function collectRequest(data, options) {
     let result = []
-    for(let i of dataValue) {
+    for(let i of data) {
         let res = getRequest(i, options.meterType)
         if (i == '0.0' && options.adress.length) {
             res.version = addKeyArrayToRequest(res.version, options.adress, 2)
@@ -58,8 +72,8 @@ function getRequest(argument, type) {
     }
 
     return ['hashedPassword', 'version'].includes(dataKey) ?
-            { [dataKey]: dataR, crc: false } :
-                { [dataKey]: dataR }
+    { [dataKey]: dataR, crc: false } :
+    { [dataKey]: dataR }
 }
 
 function addKeyArrayToRequest(replaceArray, addArg, index) {
@@ -72,8 +86,7 @@ function addKeyArrayToRequest(replaceArray, addArg, index) {
 function typeIdentificator(type) {
     switch (type) {
     case 'CE303':
-        // return queries_CE303[0]
-        return queries_CE308[0]
+        return queries_CE303[0]
         break;
     case 'CE308':
         return queries_CE308[0]

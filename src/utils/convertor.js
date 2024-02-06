@@ -1,4 +1,5 @@
 function getCurrentDataValues(value, key) {
+    // console.log(value)
     let reBrackets = /\((.*?)\)/g;
     let sortedData = [];
     let found;
@@ -6,8 +7,15 @@ function getCurrentDataValues(value, key) {
     while ((found = reBrackets.exec(value))) {
         sortedData.push(returnValue(found[1]));
     }
+    // if (value.toLowerCase().includes('err')) {
+    //     let numberError = ErrorCounter(sortedData[0].split('ERR')[1])
+    //         return { [key]: `Ошибка(${sortedData[0].split('ERR')[1]}): ${numberError}` } 
+    //     // return { [key]: value }
+    // }
 
-    if (key == 'volta') {
+    if (key == 'version') {
+        return { [key]: value }
+    } else if (key == 'volta') {
         return {
             [key]: {
                 Ua: sortedData[0],
@@ -101,6 +109,10 @@ function getCurrentDataValues(value, key) {
         };
     } else if (['positiveA', 'positiveR', 'negativeA', 'negativeR'].includes(key.split('.')[0])) {
         return createResultA_R(sortedData, key)
+    } else if (key == 'lst') {
+        return {
+            [key]: sortedData
+        }
     } else {
         return getProfile(sortedData)
     }
@@ -128,13 +140,12 @@ function getProfile(param) {
 
     let str = param.shift()
     let [date, ...second] = str.split(',')
-
     param = [second.join(','), ...param]
 
     let data = param.map(value => {
         const [valueRes, status] = value.split(',');
         const data = {
-            value,
+            valueRes,
             status,
             ...fromToDate(from,to)
         }
@@ -164,5 +175,54 @@ function fromToDate(from, to) {
     return {
         from: `${from.getHours()}:${from.getMinutes()}`,
         to: `${to.getHours()}:${to.getMinutes()}`
+    }
+}
+
+function ErrorCounter(val) {
+    switch (val) {
+    case '11':
+        return 'Команда не поддерживается устройством'
+        break;
+    case '12':
+        return 'Неизвестный параметр (имя)'
+        break;
+    case '13':
+        return 'Неправильная структура параметра'
+        break;
+    case '14':
+        return 'Ненажата кнопка ДСТП'
+        break;
+    case '15':
+        return 'Отказано в доступе к параметру (запись/чтение по списку)'
+        break;
+    case '16':
+        return 'Запрещено программирование (нет перемычки)'
+        break;
+    case '17':
+        return 'Недопустимое значение параметра'
+        break;
+    case '18':
+        return 'Несуществующая дата/отсутствует фиксация'
+        break;
+    case '19':
+        return 'Занят доступ для программирования (запись по другому порту)'
+        break;
+    case '22':
+        return 'Превышен допустимый размер ответа" (групповой запрос)'
+        break;
+    case '30':
+        return 'Проблемы с питанием (нет записи в NV-память)'
+        break;
+    case '31':
+        return 'Проблемы аппаратные i2c'
+        break;
+    case '32':
+        return 'Проблемы с NV-памятью (достоверность)'
+        break;
+    case '33':
+        return 'Проблемы с NV-памятью (запись)'
+        break;
+    default:
+        console.log(`Sorry, we are out of ${type}.`);
     }
 }
