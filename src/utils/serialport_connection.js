@@ -71,9 +71,11 @@ async function getData (data, port, crc=true) {
             await writeToPort(dataReq,port)
         } else if (key != 'closeCommand') {
             await writeToPort(dataReq,port)
-            let result = await waitForData(port)
-            if (!['hashedPassword', 'password'].includes(key)) {
+            let result = (await waitForData(port))
+            if (!['hashedPassword', 'password', 'version'].includes(key)) {
                 return getCurrentDataValues(result.toString(), key)
+            } else if (key == 'version') {
+                return { version: result.toString() }
             }
         }
     } catch (err) {

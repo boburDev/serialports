@@ -96,16 +96,13 @@ function getCurrentDataValues(value, key) {
         };
     } else if (key == 'currentDate') {
         let today = sortedData[0].split(',');
-        // console.log(today)
         return {
             [key]: `${today[0]} ${today[1].replace('.', '/')}`
         };
-    } else if (key == 'version') {
-        return { [key]: value };
     } else if (['positiveA', 'positiveR', 'negativeA', 'negativeR'].includes(key.split('.')[0])) {
         return createResultA_R(sortedData, key)
     } else {
-        return getProfile(value)
+        return getProfile(sortedData)
     }
 }
 
@@ -129,53 +126,43 @@ function getProfile(param) {
     let from = new Date(currentTime);
     let to = new Date(currentTime);
 
-    const result = {};
+    let str = param.shift()
+    let [date, ...second] = str.split(',')
 
-    let values = getValuesFromParentheses(param);
-    const firstValue = values[0].split(',');
-    result['date'] = firstValue[0];
-    values = [
-        `${firstValue[1]},${firstValue[2]}`,
-        ...values.slice(1, values.length),
-        ];
+    param = [second.join(','), ...param]
 
-    result['values'] = values.map(value => {
+    let data = param.map(value => {
         const [valueRes, status] = value.split(',');
-        to.setMinutes(to.getMinutes() + 30);
-        const response = {
-            valueRes,
+        const data = {
+            value,
             status,
-            from: `${from.getHours()}:${from.getMinutes()}`,
-            to: `${to.getHours()}:${to.getMinutes()}`,
-        };
+            ...fromToDate(from,to)
+        }
         from = new Date(to);
-        return response;
-    });
+        return data;
+    })
 
-    return result;
+    return {
+        loagProfile: {
+            date,
+            counterData: data
+        }
+    }
 }
 
-function getListOfDays(param) {
-    param = param.toString();
-    return getValuesFromParentheses(param);
-}
+
+module.exports = {
+    getCurrentDataValues
+};
 
 function returnValue(value) {
     return ['', '.'].includes(value) ? '0.0' : value;
 }
 
-function getValuesFromParentheses(inputString) {
-    const regex = /\(([^)]+)\)/g;
-    const matches = [];
-
-    let match;
-    while ((match = regex.exec(inputString))) {
-        matches.push(match[1]);
+function fromToDate(from, to) {
+    to.setMinutes(to.getMinutes() + 30);
+    return {
+        from: `${from.getHours()}:${from.getMinutes()}`,
+        to: `${to.getHours()}:${to.getMinutes()}`
     }
-
-    return matches;
 }
-
-module.exports = {
-    getCurrentDataValues
-};

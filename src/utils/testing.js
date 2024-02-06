@@ -26,6 +26,18 @@
 //     }
 // }
 
+
+// function getValuesFromParentheses(inputString) {
+//     const regex = /\(([^)]+)\)/g;
+//     const matches = [];
+
+//     let match;
+//     while ((match = regex.exec(inputString))) {
+//         matches.push(match[1]);
+//     }
+//     return matches;
+// }
+
 let x = `
 47 
 63 
