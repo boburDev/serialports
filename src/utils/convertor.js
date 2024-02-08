@@ -11,6 +11,7 @@ function getCurrentDataValues(value, key) {
     if (!sortedData.length) {
         return {[key]: 0};
     }
+
     // console.log(sortedData, key)
     // if (value.toLowerCase().includes('err')) {
     //     let numberError = ErrorCounter(sortedData[0].split('ERR')[1])
@@ -142,26 +143,43 @@ function getProfile(param) {
     currentTime.setHours(0, 0, 0, 0);
     let from = new Date(currentTime);
     let to = new Date(currentTime);
+    if (param[0].split(',').length <= 1) {
 
-    let str = param.shift()
-    let [date, ...second] = str.split(',')
-    param = [second.join(','), ...param]
-
-    let data = param.map(value => {
-        const [valueRes, status] = value.split(',');
-        const data = {
-            valueRes,
-            status,
-            ...fromToDate(from,to)
+        let data = param.map(value => {
+            const data = {
+                value,
+                ...fromToDate(from,to)
+            }
+            from = new Date(to);
+            return data;
+        })
+        return {
+            loagProfile: {
+                data
+            }
         }
-        from = new Date(to);
-        return data;
-    })
+    } else {
 
-    return {
-        loagProfile: {
-            date,
-            counterData: data
+        let str = param.shift()
+        let [date, ...second] = str.split(',')
+        param = [second.join(','), ...param]
+
+        let data = param.map(value => {
+            const [valueRes, status] = value.split(',');
+            const data = {
+                valueRes,
+                status,
+                ...fromToDate(from,to)
+            }
+            from = new Date(to);
+            return data;
+        })
+
+        return {
+            loagProfile: {
+                date,
+                counterData: data
+            }
         }
     }
 }

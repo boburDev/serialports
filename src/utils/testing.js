@@ -54,7 +54,7 @@ for(let i of x) {
 	data.push(+i)
 }
 
-let addArg = '.R1.ET0QI().7'
+let addArg = '.R1.ENDQI().p'
 
 // console.log(newArg, queryMaker(newArg,false), queryMaker([1,82,49,2,69,84,48,80,69,40,41,3]))
 let result = []
@@ -75,4 +75,10 @@ let newArg = result.map(c => {
 	}
 	return c.charCodeAt (0)
 })
-console.log(newArg)
+console.log(newArg, Buffer.from(newArg))
+
+function strToDec(str) {
+	return str.split('').map(c => c.charCodeAt (0))
+}
+
+console.log(strToDec('5.2.24'))
