@@ -10,16 +10,17 @@ async function getData(data) {
         let port = new SerialPort(setConfig(data).SerialPort)
         let getCommands = makeQuery(data.ReadingRegistor,setConfig(data).setUp)
         let startCommands = [...makeQuery('', setConfig(data).setUp)]
+        // console.log(getCommands)
+
         const result = []
         for(let i of getCommands) {
             startCommands.splice(3,0,i)
             await openPort(port)
             for (let j of startCommands) {
                 let data = await serialPortEngine(j, port)
-                console.log(data)
-            //     if (data && !['hashedPassword', 'password', 'version'].includes(data.key)) {
-            //         result.push(getCurrentDataValues(data.data.toString(), data.key))
-            //     } 
+                if (data && !['hashedPassword', 'password', 'version'].includes(data.key)) {
+                    result.push(getCurrentDataValues(data.data.toString(), data.key))
+                } 
                 // else if (data && data.key == 'version') {
                 //     for(let i of result) {
                 //         if (Object.keys(i)[0] != 'version') {
@@ -27,7 +28,6 @@ async function getData(data) {
                 //         }
                 //     }
                 // }
-                console.log(123)
             }
             startCommands.splice(3,1)
             await closePort(port)
@@ -86,6 +86,10 @@ async function serialPortEngine(command, port) {
     try {
         let key = Object.keys(command)[0]
         let dataReq = queryMaker([...Object.values(command)[0]], command.crc)
+        if (!['password', 'closeCommand', 'hashedPassword', 'version'].includes(key)) {
+            console.log(key, dataReq)
+
+        }
         if (key == 'closeCommand') {
             await writeToPort(dataReq, port)
             return;

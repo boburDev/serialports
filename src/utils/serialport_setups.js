@@ -38,8 +38,9 @@ const closePort = (port) => {
 const waitForData = (port, timeout = 1600) => {
     return new Promise((resolve, reject) => {
         const dataHandler = data => {
-            resolve(data);
+            resolve(data)
         }
+
         port.pipe(
             new InterByteTimeoutParser({
                 interval: 300,

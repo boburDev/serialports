@@ -1,12 +1,16 @@
 function getCurrentDataValues(value, key) {
-    // console.log(value)
-    let reBrackets = /\((.*?)\)/g;
-    let sortedData = [];
-    let found;
+    if (value.toLowerCase().includes('err')) {
+        // console.log(getFromBrackers(value))
 
-    while ((found = reBrackets.exec(value))) {
-        sortedData.push(returnValue(found[1]));
+        return {[key]: null};
     }
+    // console.log(value, key)
+    let sortedData = getFromBrackers(value);
+    // console.log(sortedData)
+    if (!sortedData.length) {
+        return {[key]: 0};
+    }
+    
     // if (value.toLowerCase().includes('err')) {
     //     let numberError = ErrorCounter(sortedData[0].split('ERR')[1])
     //         return { [key]: `Ошибка(${sortedData[0].split('ERR')[1]}): ${numberError}` } 
@@ -165,6 +169,16 @@ function getProfile(param) {
 module.exports = {
     getCurrentDataValues
 };
+
+function getFromBrackers(value){
+    let reBrackets = /\((.*?)\)/g;
+    let sortedData = []
+    let found;
+    while ((found = reBrackets.exec(value))) {
+        sortedData.push(returnValue(found[1]));
+    }
+    return sortedData
+}
 
 function returnValue(value) {
     return ['', '.'].includes(value) ? '0.0' : value;
