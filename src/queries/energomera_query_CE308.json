@@ -6,7 +6,7 @@
             "password": [1, 80, 49, 2, 40, 41, 3],
             "closeCommand": [1, 66, 48, 3],
             "lst": [1, 82, 49, 2, 76, 83, 84, 48, 49, 40, 41, 3],
-            "_comment": "add index of available day after 40"
+            "_comment": "add index of available day after 40 at 308"
         },
         "currentData": {
             "positiveA": {

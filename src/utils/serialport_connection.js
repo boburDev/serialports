@@ -120,10 +120,10 @@ async function serialPortEngine(command, port) {
         }
         await writeToPort(dataReq, port)
         const data = await waitForData(port);
-        // if (!['password', 'closeCommand', 'hashedPassword', 'version'].includes(key)) {
-        //     console.log(key, dataReq)
-        //     console.log(data.toString())
-        // }
+        if (!['password', 'closeCommand', 'hashedPassword', 'version'].includes(key)) {
+            console.log(key, dataReq)
+            console.log(data.toString())
+        }
         return {data, key}
     } catch (err) {
         console.log('Error in serialport connection file', err.message)

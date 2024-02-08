@@ -1,6 +1,6 @@
 const queries_CE308 = require('../queries/energomera_query_CE308.json');
 const queries_CE303 = require('../queries/energomera_query_CE303.json');
-// const queries_CE102M = require('../queries/energomera_query_CE102M.json');
+const queries_CE102M = require('../queries/energomera_query_CE102M.json');
 
 module.exports = { makeQuery, addKeyArrayToRequest };
 
@@ -92,8 +92,7 @@ function typeIdentificator(type) {
         return queries_CE308[0]
         break;
     case 'CE102M':
-        // return queries_CE102M[0]
-        return queries_CE308[0]
+        return queries_CE102M[0]
         break;
     default:
         console.log(`Sorry, we are out of ${type}.`);

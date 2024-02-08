@@ -75,10 +75,14 @@ let newArg = result.map(c => {
 	}
 	return c.charCodeAt (0)
 })
-console.log(newArg, Buffer.from(newArg))
+// console.log(newArg, Buffer.from(newArg))
 
 function strToDec(str) {
 	return str.split('').map(c => c.charCodeAt (0))
 }
 
-console.log(strToDec('5.2.24'))
+// console.log(strToDec('5.2.24'))
+
+
+
+// LEETCODE
