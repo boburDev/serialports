@@ -1,4 +1,5 @@
 function getCurrentDataValues(value, key) {
+
     if (value.toLowerCase().includes('err')) {
         // console.log(getFromBrackers(value))
 
@@ -10,7 +11,7 @@ function getCurrentDataValues(value, key) {
     if (!sortedData.length) {
         return {[key]: 0};
     }
-    
+    // console.log(sortedData, key)
     // if (value.toLowerCase().includes('err')) {
     //     let numberError = ErrorCounter(sortedData[0].split('ERR')[1])
     //         return { [key]: `Ошибка(${sortedData[0].split('ERR')[1]}): ${numberError}` } 

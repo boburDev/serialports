@@ -1,3 +1,4 @@
+const { queryMaker } = require('./crc')
 // function decimalToHex(d, padding) {
 //     if (Array.isArray(d)) {
 //         return d.map(value => {
@@ -53,4 +54,25 @@ for(let i of x) {
 	data.push(+i)
 }
 
-console.log(data)
+let addArg = '.R1.ET0QI().7'
+
+// console.log(newArg, queryMaker(newArg,false), queryMaker([1,82,49,2,69,84,48,80,69,40,41,3]))
+let result = []
+let counter = 1
+for(let i of addArg){
+	if (i == '.') {
+		result.push(counter)
+		if (counter == 3) break;
+		counter++
+	} else {
+		result.push(i)
+	}
+}
+// console.log(result)
+let newArg = result.map(c => {
+	if (typeof c == 'number') {
+		return c
+	}
+	return c.charCodeAt (0)
+})
+console.log(newArg)

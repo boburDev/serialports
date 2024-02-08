@@ -76,7 +76,7 @@ function getRequest(argument, type) {
     { [dataKey]: dataR }
 }
 
-function addKeyArrayToRequest(replaceArray, addArg, index) {
+function addKeyArrayToRequest(replaceArray, addArg, index=0) {
     let newArg = addArg.split ('').map(c => c.charCodeAt (0))
     let newArray = [...replaceArray]
     const from = newArray.splice(0, index)

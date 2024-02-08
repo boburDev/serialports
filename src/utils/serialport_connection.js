@@ -19,6 +19,7 @@ async function getData(data) {
             for (let j of startCommands) {
                 let data = await serialPortEngine(j, port)
                 if (data && !['hashedPassword', 'password', 'version'].includes(data.key)) {
+                    console.log(data.data.toString())
                     result.push(getCurrentDataValues(data.data.toString(), data.key))
                 } 
                 // else if (data && data.key == 'version') {
@@ -86,10 +87,9 @@ async function serialPortEngine(command, port) {
     try {
         let key = Object.keys(command)[0]
         let dataReq = queryMaker([...Object.values(command)[0]], command.crc)
-        if (!['password', 'closeCommand', 'hashedPassword', 'version'].includes(key)) {
-            console.log(key, dataReq)
-
-        }
+        // if (!['password', 'closeCommand', 'hashedPassword', 'version'].includes(key)) {
+        //     console.log(key, dataReq)
+        // }
         if (key == 'closeCommand') {
             await writeToPort(dataReq, port)
             return;
