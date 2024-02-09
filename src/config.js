@@ -1,5 +1,5 @@
 const setConfig = (reqData) => ({
-        SerialPort: {
+        serialPort: {
             path: reqData.commDetail1 || null,
             baudRate: reqData.commDetail2 || null,
             dataBits: reqData.dataBit || null,

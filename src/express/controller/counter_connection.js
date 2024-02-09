@@ -1,22 +1,17 @@
-const { getData, getDataLst } = require('../../utils/serialport_connection');
+const { getLstCounterResult, getDataLst, getCounterResult } = require('../../utils/serialport_connection');
 const { setConfig } = require('../../config.js')
 module.exports = {
     POST: async (req, res) => {
         try {
-            let reqData = req.body
-            let lstData = reqData.ReadingRegistorTime || []
-            if (Object.values(setConfig(reqData).setUp).includes(null) || Object.values(setConfig(reqData).SerialPort).includes(null)) {
-                throw new Error('Malumotlar tuliq kirg\'zilmagan')
-            }
+            const reqData = req.body;
+            const { setUp, serialPort } = setConfig(reqData);
 
-            let data
-            if (!lstData.length) {
-                data = await getData(reqData) || []
-            } else {
-                data = await getDataLst(reqData) || []
+            if (Object.values(setUp).includes(null) || Object.values(serialPort).includes(null)) {
+                throw new Error('Malumot tuliq kirgizilmagan');
             }
-            
-            res.json({result: data, error: null, status: 200})
+            const lstData = reqData.ReadingRegistorTime || [];
+            const data = lstData.length ? await getLstCounterResult(reqData) : await getCounterResult(reqData);
+            res.json({result: data, error: false, status: 200})
         } catch (error) {
             res.json({data: null, error: error.message, status: 404})
         }
@@ -24,4 +19,4 @@ module.exports = {
     GET: async (req, res) => {
         res.json({ data: 'hello serial port', status: 200 });
     }
-};
+}

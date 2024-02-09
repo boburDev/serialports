@@ -1,4 +1,5 @@
 const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeout');
+
 const openPort = (port) => {
     return new Promise((resolve, reject) => {
         port.open(err => {
