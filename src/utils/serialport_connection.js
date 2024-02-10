@@ -145,6 +145,8 @@ async function getLstCounterResult(data) {
             const data = await waitForData(port);
             return {key,data}
         } catch (err) {
+
+            console.log(err)
             throw new Error('Error in serialport engine', err.message)
         }
     }
