@@ -4,10 +4,15 @@ const { crc8 } = require('crc');
 module.exports = { queryMaker };
 
 function queryMaker(data, crc, type) {
-    if (crc == undefined) {
-        return Buffer.from([...data, CRC8(data)], 'ascii')
-    } else if (crc == false) {
-        return Buffer.from(data, 'ascii')
+    if (type == 'Mercury') {
+        let {crc1,crc2} = CRC16Modbus(data)
+        return new Buffer.from([...data, crc1, crc2], 'ascii')
+    } else {
+        if (crc == undefined) {
+            return Buffer.from([...data, CRC8(data)], 'ascii')
+        } else if (crc == false) {
+            return Buffer.from(data, 'ascii')
+        }
     }
 }
 

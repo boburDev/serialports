@@ -4,6 +4,7 @@ const { openPort, closePort, writeToPort, waitForData } = require('./serialport_
 const { setConfig } = require('../config.js')
 const ObisQuery = require('./obis_maker')
 const { getEnergomeraResult } = require('./energomera_result_convertor.js')
+const { getMercuryResult } = require('./mercury_result_convertor.js')
 
 module.exports = {
     getCounterResult,
@@ -20,7 +21,6 @@ async function getCounterResult(data) {
         if (setUp.meterType.includes('CE')) {
             const getCommands = ObisQuery[`${type[0]}_Couner_Query`](data.ReadingRegistor, setUp, 'obis')
             const startCommands = ObisQuery[`${type[0]}_Couner_Query`](null, setUp)
-
             for(let i of getCommands) {
                 startCommands.splice(3,0,i)
                 await openPort(port)
@@ -39,6 +39,31 @@ async function getCounterResult(data) {
                 await closePort(port)
             }
             return result
+        } else if (setUp.meterType.includes('Mercury')) {
+            let getCommands = ObisQuery[`${type[0]}_Couner_Query`](data.ReadingRegistor, setUp, 'obis')
+            const startCommands = ObisQuery[`${type[0]}_Couner_Query`](null, setUp)
+
+            for(let i of getCommands) {
+                startCommands.splice(startCommands.length,0,i)
+                await openPort(port)
+                for (let j of startCommands) {
+                    let { data, key } = await serialPortEngine(j, port, type[0])
+                    if (data && !['version', 'password'].includes(key)) {
+                        let resValue = getMercuryResult(data,key)
+                        console.log(resValue)
+                        // if (resValue.version && !resValue.version.includes(type.join(''))) {
+                        //     throw new Error('connection error check parametres')
+                        // } else if (key != 'version') {
+                        //     result.push(resValue)
+                        // }
+                    }
+                }
+                startCommands.splice(startCommands.length,1)
+                await closePort(port)
+            }
+            // return result
+
+            return 'counter in progress'
         } else {
             return [{data: 'this type of counter not riten yet'}]
         }
@@ -133,19 +158,18 @@ async function getLstCounterResult(data) {
         }
     }
 
-    async function serialPortEngine(command, port) {
+    async function serialPortEngine(command, port, meterType) {
         try {
             let key = Object.keys(command)[0]
-            let dataReq = queryMaker([...Object.values(command)[0]], command.crc)
+            let dataReq = meterType ? queryMaker([...Object.values(command)[0]], null, meterType) : queryMaker([...Object.values(command)[0]], command.crc)
             if (key == 'closeCommand') {
                 await writeToPort(dataReq, port)
                 return {key,data:null}
-            }
+            } 
             await writeToPort(dataReq, port)
             const data = await waitForData(port);
             return {key,data}
         } catch (err) {
-
             console.log(err)
             throw new Error('Error in serialport engine', err.message)
         }

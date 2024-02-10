@@ -1,114 +1,209 @@
-const { SerialPort } = require('serialport');
-const {
-    InterByteTimeoutParser,
-} = require('@serialport/parser-inter-byte-timeout');
-const crc16Modbus = require('../../utils/crcMaker');
-const { calcResult, calcDateTime } = require('../../utils/result');
-
-const serialPort = new SerialPort({
-    path: 'COM10',
-    baudRate: 9600,
-    dataBits: 8, // Adjust if necessary
-    stopBits: 1, // Adjust if necessary
-    parity: 'none', // Adjust if necessary
-    autoOpen: false,
-});
-
-const parser = serialPort.pipe(
-    new InterByteTimeoutParser({
-        interval: 100,
-        maxBufferSize: 10000,
-    })
-);
+const crypto = require('crypto');
 
 const getMeterDataByDLMS = async (req, res) => {
     try {
-        const data = req.body;
-        await openPort();
+        const data = req.body.number
+        const value = req.body.buffer
+        let result = 0
+        console.log(encrypt('5991'))
+        if (data == 1) {
+            
 
-        const currentTime = [
-            0x7e, 0xa0, 0x1c, 0x00, 0x02, 0x7c, 0xdb, 0x05, 0x32, 0x4b, 0xeb,
-            0xe6, 0xe6, 0x00, 0xc0, 0x01, 0xc1, 0x00, 0x03, 0x01, 0x00, 0x48,
-            0x07, 0x00, 0xff, 0x02, 0x00, 0x6c, 0x25, 0x7e,
-        ];
-
-        // Uncomment the following lines if CRC calculation is required
-        // const { crc1, crc2 } = crc16Modbus(currentTime);
-        // currentTime.push(crc1, crc2);
-
-        const getCurrentTime = Buffer.from(currentTime);
-        console.log(getCurrentTime);
-
-        await writeToPort(getCurrentTime);
-        const currentTimeResponse = await waitForData();
-        console.log(currentTimeResponse);
-        await closePort();
-
-        res.json({
-            currentTime: currentTimeResponse,
-        });
+            res.json({result: result})
+        } else {
+            res.send('success')
+        }
     } catch (err) {
-        console.error(`Error: ${err.message}`);
-        await closePort();
+        console.error(`Error: ${err}`);
         res.status(500).json({ error: err.message });
     }
 };
 
-const openPort = () => {
-    return new Promise((resolve, reject) => {
-        serialPort.open(err => {
-            if (err) {
-                reject(new Error(`Failed to open port. Error: ${err.message}`));
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
-const writeToPort = data => {
-    return new Promise((resolve, reject) => {
-        serialPort.write(data, 'ascii', err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
-const waitForData = (timeout = 2000) => {
-    return new Promise((resolve, reject) => {
-        const dataHandler = data => {
-            resolve(data);
-        };
-        parser.once('data', dataHandler);
-
-        const timeoutId = setTimeout(() => {
-            parser.removeListener('data', dataHandler);
-            reject(new Error('Timeout waiting for data'));
-        }, timeout);
-
-        const clearTimer = () => {
-            clearTimeout(timeoutId);
-            parser.removeListener('data', dataHandler);
-        };
-
-        parser.once('data', clearTimer);
-    });
-};
-
-const closePort = () => {
-    return new Promise((resolve, reject) => {
-        serialPort.close(err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
 module.exports = getMeterDataByDLMS;
+
+function encrypt(plainText, key, outputEncoding = "base64") {
+    const cipher = crypto.createCipheriv("aes-128-ecb", key, null);
+    return Buffer.concat([cipher.update(plainText), cipher.final()]).toString(outputEncoding);
+}
+
+function decrypt(cipherText, key, outputEncoding = "utf8") {
+    const cipher = crypto.createDecipheriv("aes-128-ecb", key, null);
+    return Buffer.concat([cipher.update(cipherText), cipher.final()]).toString(outputEncoding);
+}
+
+
+
+
+function queries() {
+    const openPortCommand = [
+        0x7E,
+        0xA0,
+        0x23,
+        0x00,
+        0x02,
+        0x7C,
+        0xDB,
+        0x05,
+        0x93,
+        0x76,
+        0x90,
+        0x81,
+        0x80,
+        0x14,
+        0x05,
+        0x02,
+        0x07,
+        0xD0,
+        0x06,
+        0x02,
+        0x07,
+        0xD0,
+        0x07,
+        0x04,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x04,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x3A,
+        0xF2,
+        0x7E
+        ]
+
+    const passwordCommand = [
+        0x7E,
+        0xA0,
+        0x4B,
+        0x00,
+        0x02,
+        0x7C,
+        0xDB,
+        0x05,
+        0x10,
+        0x8C,
+        0x5C,
+        0xE6,
+        0xE6,
+        0x00,
+        0x60,
+        0x39,
+        0x80,
+        0x02,
+        0x07,
+        0x80,
+        0xA1,
+        0x09,
+        0x06,
+        0x07,
+        0x60,
+        0x85,
+        0x74,
+        0x05,
+        0x08,
+        0x01,
+        0x01,
+        0x8A,
+        0x02,
+        0x07,
+        0x80,
+        0x8B,
+        0x07,
+        0x60,
+        0x85,
+        0x74,
+        0x05,
+        0x08,
+        0x02,
+        0x01,
+        0xAC,
+        0x0A,
+        0x80,
+        0x08,
+        0x30,
+        0x30,
+        0x30,
+        0x30,
+        0x30,
+        0x30,
+        0x30,
+        0x30,
+        0xBE,
+        0x10,
+        0x04,
+        0x0E,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x06,
+        0x5F,
+        0x1F,
+        0x04,
+        0x00,
+        0x62,
+        0x1E,
+        0x5D,
+        0xFF,
+        0xFF,
+        0xE9,
+        0xF3,
+        0x7E
+        ]
+
+
+    const currentTime = [
+       0x7E,
+       0xA0,
+       0x23,
+       0x00,
+       0x02,
+       0x5C,
+       0xCF,
+       0x05,
+       0x93,
+       0xD1,
+       0xF9,
+       0x81,
+       0x80,
+       0x14,
+       0x05,
+       0x02,
+       0x07,
+       0xD0,
+       0x06,
+       0x02,
+       0x07,
+       0xD0,
+       0x07,
+       0x04,
+       0x00,
+       0x00,
+       0x00,
+       0x01,
+       0x08,
+       0x04,
+       0x00,
+       0x00,
+       0x00,
+       0x01,
+       0x3A,
+       0xF2,
+       0x7E,
+       ];
+    const currentTime1 = [0x7E, 0xA0, 0x1C, 0x00, 0x02, 0x7C, 0xDB, 0x05, 0x32, 0x4B, 0xEB, 0xE6, 0xE6, 0x00, 0xC0, 0x01, 0xC1, 0x00, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0xFF, 0x02, 0x00, 0x60, 0x1A, 0x7E]
+
+    const closeCommand = [0x7E, 0xA0, 0x0A, 0x00, 0x02, 0x7C, 0xDB, 0x05, 0x53, 0xC0, 0x74, 0x7E]
+    return {
+        openPortCommand,
+        passwordCommand,
+        currentTime,
+        currentTime1,
+        closeCommand
+    }
+}
+

@@ -5,9 +5,29 @@ const CE_Counter_Commands = {
 	lsts: ['0.0', '0.1', '0.2', '0.4', '0.3']
 }
 
+const Mercury_Counter_Commands = {
+	requiredCommands: ['0.0','0.1']
+}
+
 module.exports = {
 	CE_Couner_Query: readCECounterOBIS,
+	Mercury_Couner_Query: readMercuryCounterOBIS,
+	
+	// functions
 	parseValue: insertArgsIntoArray
+}
+
+function readMercuryCounterOBIS(obis, options, key) {
+	try {
+		switch (key) {
+		case 'obis':
+			return commmandsMercury(obis, options)
+		default:
+			return commmandsMercury(Mercury_Counter_Commands.requiredCommands, options)
+		}
+	} catch (error) {
+		throw new Error(`Error in readMercuryCounterOBIS function: ${error.message}`)
+	}
 }
 
 function readCECounterOBIS(obis, options, key) {
@@ -25,6 +45,27 @@ function readCECounterOBIS(obis, options, key) {
 	}
 }
 
+function commmandsMercury(data, options) {
+	return data.map(i => {
+		let result = getRequest(i, options.meterType)
+		let newKey = Object.keys(result)[0]
+		if (options.adress.length) {
+			result[newKey].splice(0, 1, +options.adress)
+			if (i === '0.1') {
+				result.password.splice(3, 6, ...Array.from(options.password, c => +c))
+				// result.password = insertArgsIntoArray(result.password, options.password, 3)
+				
+			}
+			return result
+		} else {
+			if (i === '0.1') {
+				result.password.splice(3, 6, ...Array.from(options.password, c => +c))
+			}
+			return result
+		}
+	})
+}
+
 function commmandsCE(data, options) {
 	return data.map(i => {
 		let result = getRequest(i, options.meterType)
@@ -40,12 +81,10 @@ function commmandsCE(data, options) {
 function getRequest(argument, type) {
 	const queriesOfType = queries[type] || [];
 	if (!Object.keys(queriesOfType).length) return {};
-
 	let dataR = {};
 	let dataY = '';
 	let data = argument.split('.');
 	let dataKey = '';
-
 	for (let i = 0; i < data.length; i++) {
 		if (dataY.length > 0) {
 			dataY = Object.keys(dataR)[+data[i]];
@@ -59,9 +98,13 @@ function getRequest(argument, type) {
 			dataY = index;
 		}
 	}
-	return ['hashedPassword', 'version'].includes(dataKey) ?
-	{ [dataKey]: dataR, crc: false } :
-	{ [dataKey]: dataR };
+	if (type.includes('CE')) {
+		return ['hashedPassword', 'version'].includes(dataKey) ?
+		{ [dataKey]: dataR, crc: false } :
+		{ [dataKey]: dataR };
+	} else {
+		return { [dataKey]: dataR };
+	}
 }
 
 function insertArgsIntoArray(array, args, index = 0) {
