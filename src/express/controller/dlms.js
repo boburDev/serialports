@@ -35,11 +35,7 @@ const getMeterDataByDLMS = async (req, res) => {
         let password = hexStringToByteArray(startCommands[1].password)
         let volta = hexStringToByteArray(getCommands[0].currentDate)
         
-        
-        
-        // console.log(connect);
-        // console.log(password);
-        // console.log(volta);
+
         
         const port = new SerialPort(serialPort)
         await openPort(port)
