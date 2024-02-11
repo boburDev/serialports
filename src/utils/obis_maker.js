@@ -9,12 +9,42 @@ const Mercury_Counter_Commands = {
 	requiredCommands: ['0.0','0.1']
 }
 
+const TE_Counter_Commands = {
+	requiredCommands: ['0.0','0.1']
+}
+
 module.exports = {
 	CE_Couner_Query: readCECounterOBIS,
 	Mercury_Couner_Query: readMercuryCounterOBIS,
+	TE_Couner_Query: readTECounterOBIS,
 	
 	// functions
 	parseValue: insertArgsIntoArray
+}
+
+function readTECounterOBIS(obis, options, key) {
+	try {
+		switch (key) {
+		case 'obis':
+			return commmandsTE(obis, options)
+		default:
+			return commmandsTE(TE_Counter_Commands.requiredCommands, options)
+		}
+	} catch (error) {
+		throw new Error(`Error in readMercuryCounterOBIS function: ${error.message}`)
+	}
+}
+
+function commmandsTE(data, options) {
+	return data.map(i => {
+		let result = getRequest(i, options.meterType)
+		// if (i === '0.0' && options.adress.length) {
+		// 	result.version = insertArgsIntoArray(result.version, options.adress, 2)
+		// } else if (i === '0.2') {
+		// 	result.password = insertArgsIntoArray(result.password, options.password, 5)
+		// }
+		return result
+	})
 }
 
 function readMercuryCounterOBIS(obis, options, key) {
@@ -27,21 +57,6 @@ function readMercuryCounterOBIS(obis, options, key) {
 		}
 	} catch (error) {
 		throw new Error(`Error in readMercuryCounterOBIS function: ${error.message}`)
-	}
-}
-
-function readCECounterOBIS(obis, options, key) {
-	try {
-		switch (key) {
-		case 'lst':
-			return commmandsCE(CE_Counter_Commands.lsts, options)
-		case 'obis':
-			return commmandsCE(obis, options)
-		default:
-			return commmandsCE(CE_Counter_Commands.requiredCommands, options)
-		}
-	} catch (error) {
-		throw new Error(`Error in readCECounterOBIS function: ${error.message}`)
 	}
 }
 
@@ -64,6 +79,21 @@ function commmandsMercury(data, options) {
 			return result
 		}
 	})
+}
+
+function readCECounterOBIS(obis, options, key) {
+	try {
+		switch (key) {
+		case 'lst':
+			return commmandsCE(CE_Counter_Commands.lsts, options)
+		case 'obis':
+			return commmandsCE(obis, options)
+		default:
+			return commmandsCE(CE_Counter_Commands.requiredCommands, options)
+		}
+	} catch (error) {
+		throw new Error(`Error in readCECounterOBIS function: ${error.message}`)
+	}
 }
 
 function commmandsCE(data, options) {

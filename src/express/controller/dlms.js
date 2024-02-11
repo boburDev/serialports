@@ -1,187 +1,76 @@
+const { SerialPort } = require('serialport');
+const { openPort, closePort, waitForData, writeToPort } = require('../../utils/serialport_setups');
+const { setConfig } = require('../../config');
+const { queries } = require('../../queries');
+const { TE_Couner_Query } = require('../../utils/obis_maker');
+
+// {
+//     path: 'COM3',
+//     baudRate: 9600,
+//     dataBits: 8, // Adjust if necessary
+//     stopBits: 1, // Adjust if necessary
+//     parity: 'none', // Adjust if necessary
+//     autoOpen: false,
+// }
+
+
+
+// var hexString = ["7E", "A0", "0A", "00", "02", "7C", "DB", "05", "53", "C0", "74", "7E" ] // Example hex string
+// // var hexString = "48656C6C6F20576F726C64"; // Example hex string
+// var byteArray = hexStringToByteArray(hexString);
+// console.log(Buffer.from(byteArray, 'ascii'));
+
 const getMeterDataByDLMS = async (req, res) => {
     try {
-
         
+        const reqData = req.body;
+        const { setUp, serialPort } = setConfig(reqData);
+        if (Object.values(setUp).includes(null) || Object.values(serialPort).includes(null)) {
+            throw new Error('Malumot tuliq kirgizilmagan');
+        }
 
+        const getCommands = TE_Couner_Query(reqData.ReadingRegistor, setUp, 'obis')
+        const startCommands = TE_Couner_Query(null, setUp)
+        let connect = hexStringToByteArray(startCommands[0].version)
+        let password = hexStringToByteArray(startCommands[1].password)
+        let volta = hexStringToByteArray(getCommands[0].currentDate)
+        
+        
+        
+        // console.log(connect);
+        // console.log(password);
+        // console.log(volta);
+        
+        const port = new SerialPort(serialPort)
+        await openPort(port)
+        
+        await writeToPort(connect, port);
+        const connectRes = await waitForData(port);
+        
+        await writeToPort(password, port);
+        const passwordRes = await waitForData(port);
+        
+        await writeToPort(volta, port);
+        const voltRes = await waitForData(port);
+
+        console.log(voltRes)
+        
+        await closePort(port);
+        res.send('123')
     } catch (err) {
         console.error(`Error: ${err}`);
         res.status(500).json({ error: err.message });
     }
-};
+}
 
 module.exports = getMeterDataByDLMS;
 
 
-function queries() {
-    const openPortCommand = [
-        0x7E,
-        0xA0,
-        0x23,
-        0x00,
-        0x02,
-        0x7C,
-        0xDB,
-        0x05,
-        0x93,
-        0x76,
-        0x90,
-        0x81,
-        0x80,
-        0x14,
-        0x05,
-        0x02,
-        0x07,
-        0xD0,
-        0x06,
-        0x02,
-        0x07,
-        0xD0,
-        0x07,
-        0x04,
-        0x00,
-        0x00,
-        0x00,
-        0x01,
-        0x08,
-        0x04,
-        0x00,
-        0x00,
-        0x00,
-        0x01,
-        0x3A,
-        0xF2,
-        0x7E
-        ]
 
-    const passwordCommand = [
-        0x7E,
-        0xA0,
-        0x4B,
-        0x00,
-        0x02,
-        0x7C,
-        0xDB,
-        0x05,
-        0x10,
-        0x8C,
-        0x5C,
-        0xE6,
-        0xE6,
-        0x00,
-        0x60,
-        0x39,
-        0x80,
-        0x02,
-        0x07,
-        0x80,
-        0xA1,
-        0x09,
-        0x06,
-        0x07,
-        0x60,
-        0x85,
-        0x74,
-        0x05,
-        0x08,
-        0x01,
-        0x01,
-        0x8A,
-        0x02,
-        0x07,
-        0x80,
-        0x8B,
-        0x07,
-        0x60,
-        0x85,
-        0x74,
-        0x05,
-        0x08,
-        0x02,
-        0x01,
-        0xAC,
-        0x0A,
-        0x80,
-        0x08,
-        0x30,
-        0x30,
-        0x30,
-        0x30,
-        0x30,
-        0x30,
-        0x30,
-        0x30,
-        0xBE,
-        0x10,
-        0x04,
-        0x0E,
-        0x01,
-        0x00,
-        0x00,
-        0x00,
-        0x06,
-        0x5F,
-        0x1F,
-        0x04,
-        0x00,
-        0x62,
-        0x1E,
-        0x5D,
-        0xFF,
-        0xFF,
-        0xE9,
-        0xF3,
-        0x7E
-        ]
-
-
-    const currentTime = [
-       0x7E,
-       0xA0,
-       0x23,
-       0x00,
-       0x02,
-       0x5C,
-       0xCF,
-       0x05,
-       0x93,
-       0xD1,
-       0xF9,
-       0x81,
-       0x80,
-       0x14,
-       0x05,
-       0x02,
-       0x07,
-       0xD0,
-       0x06,
-       0x02,
-       0x07,
-       0xD0,
-       0x07,
-       0x04,
-       0x00,
-       0x00,
-       0x00,
-       0x01,
-       0x08,
-       0x04,
-       0x00,
-       0x00,
-       0x00,
-       0x01,
-       0x3A,
-       0xF2,
-       0x7E,
-       ];
-    const currentTime1 = [0x7E, 0xA0, 0x1C, 0x00, 0x02, 0x7C, 0xDB, 0x05, 0x32, 0x4B, 0xEB, 0xE6, 0xE6, 0x00, 0xC0, 0x01, 0xC1, 0x00, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0xFF, 0x02, 0x00, 0x60, 0x1A, 0x7E]
-
-    const closeCommand = [0x7E, 0xA0, 0x0A, 0x00, 0x02, 0x7C, 0xDB, 0x05, 0x53, 0xC0, 0x74, 0x7E]
-    return {
-        openPortCommand,
-        passwordCommand,
-        currentTime,
-        currentTime1,
-        closeCommand
+function hexStringToByteArray(hexString) {
+    var result = [];
+    for (var i = 0; i < hexString.length; i++) {
+        result.push(parseInt(hexString[i], 16));
     }
+    return Buffer.from(result, 'ascii')
 }
-

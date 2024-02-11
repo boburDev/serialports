@@ -162,6 +162,7 @@ async function getLstCounterResult(data) {
         try {
             let key = Object.keys(command)[0]
             let dataReq = meterType ? queryMaker([...Object.values(command)[0]], null, meterType) : queryMaker([...Object.values(command)[0]], command.crc)
+            // console.log(dataReq, key)
             if (key == 'closeCommand') {
                 await writeToPort(dataReq, port)
                 return {key,data:null}

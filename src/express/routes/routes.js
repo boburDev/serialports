@@ -6,6 +6,6 @@ const testCounters = require('../controller/dlms.js');
 router.get('/', (req, res) => res.send('working...'));
 router.get('/connection', getMeterDataConnection.GET);
 router.post('/connection', getMeterDataConnection.POST);
-router.post('/test_port', testCounters);
+router.post('/te73', testCounters);
 
 module.exports = router;
