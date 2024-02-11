@@ -1,18 +1,8 @@
-const crypto = require('crypto');
-
 const getMeterDataByDLMS = async (req, res) => {
     try {
-        const data = req.body.number
-        const value = req.body.buffer
-        let result = 0
-        console.log(encrypt('5991'))
-        if (data == 1) {
-            
 
-            res.json({result: result})
-        } else {
-            res.send('success')
-        }
+        
+
     } catch (err) {
         console.error(`Error: ${err}`);
         res.status(500).json({ error: err.message });
@@ -20,18 +10,6 @@ const getMeterDataByDLMS = async (req, res) => {
 };
 
 module.exports = getMeterDataByDLMS;
-
-function encrypt(plainText, key, outputEncoding = "base64") {
-    const cipher = crypto.createCipheriv("aes-128-ecb", key, null);
-    return Buffer.concat([cipher.update(plainText), cipher.final()]).toString(outputEncoding);
-}
-
-function decrypt(cipherText, key, outputEncoding = "utf8") {
-    const cipher = crypto.createDecipheriv("aes-128-ecb", key, null);
-    return Buffer.concat([cipher.update(cipherText), cipher.final()]).toString(outputEncoding);
-}
-
-
 
 
 function queries() {

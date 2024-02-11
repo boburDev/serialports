@@ -4,6 +4,7 @@ const CE_102M = require('./energomera/energomera_query_CE102M.json')[0]
 
 const Mercury = require('./mercury/mercury.json')[0]
 
+const TE_73 = require('./TE73_CAS/TE_73CAS.json')
 const Errors = require('./energomera/counterErrors.json')[0]
 
 module.exports.queries = {
@@ -11,5 +12,6 @@ module.exports.queries = {
 	CE_303,
 	CE_102M,
 	Mercury,
+	TE_73,
 	Errors
 }
