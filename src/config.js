@@ -1,16 +1,16 @@
 const setConfig = (reqData) => ({
         serialPort: {
-            path: reqData.commDetail1 || null,
-            baudRate: reqData.commDetail2 || null,
-            dataBits: reqData.dataBit || null,
-            stopBits: reqData.stopBit || null,
-            parity: reqData.parity || null,
+            path: reqData.commDetail1,
+            baudRate: reqData.commDetail2,
+            dataBits: reqData.dataBit,
+            stopBits: reqData.stopBit,
+            parity: reqData.parity,
             autoOpen: false
         },
         setUp: {
-            adress: reqData.MeterAdress || '',
-            password: reqData.MeterPassword || null,
-            meterType: reqData.MeterType || null
+            address: reqData.MeterAddress || '',
+            password: reqData.MeterPassword,
+            meterType: reqData.MeterType
         }
     })
 

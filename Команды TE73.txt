@@ -66,3 +66,5 @@ Reading current data
 Connection close command
 7E A0 0A 00 02 7C DB 05 53 C0 74 7E
 
+ "frequency": ["7E", "A0", "1C", "00", "02", "7C", "DB", "05", "32", "4B", "EB", "E6", "E6", "00", "C0", "01", 
+            "C1", "00", "03", "01", "00", "0E", "07", "00", "FF", "02", "00", "47", "3F", "7E"],

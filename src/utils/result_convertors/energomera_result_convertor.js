@@ -116,7 +116,7 @@ function getProfile(param, optDate) {
     currentTime.setHours(0, 0, 0, 0);
     let from = new Date(currentTime);
     let to = new Date(currentTime);
-    console.log(param)
+    // console.log(param)
     if (param[0].split(',').length <= 1) {
 
         let data = param.map(value => {

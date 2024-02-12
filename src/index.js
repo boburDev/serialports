@@ -10,8 +10,6 @@ app.use(express.json())
 app.use(routes)
 
 const serverHttp = http.createServer(app)
-// const { io } = require("./utils/Socket.js");
-// io.attach(serverHttp);
 
 serverHttp.prependListener("request", (req, res) => {
    res.setHeader("Access-Control-Allow-Origin", "*");

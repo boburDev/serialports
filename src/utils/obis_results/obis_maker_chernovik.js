@@ -1,4 +1,4 @@
-const { queries } = require('../queries')
+const { queries } = require('../../queries')
 
 const CE_Counter_Commands = {
 	requiredCommands: ['0.0', '0.1', '0.2', '0.3'],
@@ -14,9 +14,9 @@ const TE_Counter_Commands = {
 }
 
 module.exports = {
-	CE_Couner_Query: readCECounterOBIS,
-	Mercury_Couner_Query: readMercuryCounterOBIS,
-	TE_Couner_Query: readTECounterOBIS,
+	CE_Counter_Query: readCECounterOBIS,
+	Mercury_Counter_Query: readMercuryCounterOBIS,
+	TE_Counter_Query: readTECounterOBIS,
 	
 	// functions
 	parseValue: insertArgsIntoArray
@@ -26,20 +26,20 @@ function readTECounterOBIS(obis, options, key) {
 	try {
 		switch (key) {
 		case 'obis':
-			return commmandsTE(obis, options)
+			return commandsTE(obis, options)
 		default:
-			return commmandsTE(TE_Counter_Commands.requiredCommands, options)
+			return commandsTE(TE_Counter_Commands.requiredCommands, options)
 		}
 	} catch (error) {
-		throw new Error(`Error in readMercuryCounterOBIS function: ${error.message}`)
+		throw new Error(`Error in readTECounterOBIS function: ${error.message}`)
 	}
 }
 
-function commmandsTE(data, options) {
+function commandsTE(data, options) {
 	return data.map(i => {
-		let result = getRequest(i, options.meterType)
-		// if (i === '0.0' && options.adress.length) {
-		// 	result.version = insertArgsIntoArray(result.version, options.adress, 2)
+		let result = getRequestCommandFromJson(i, options.meterType)
+		// if (i === '0.0' && options.address.length) {
+		// 	result.version = insertArgsIntoArray(result.version, options.address, 2)
 		// } else if (i === '0.2') {
 		// 	result.password = insertArgsIntoArray(result.password, options.password, 5)
 		// }
@@ -51,21 +51,21 @@ function readMercuryCounterOBIS(obis, options, key) {
 	try {
 		switch (key) {
 		case 'obis':
-			return commmandsMercury(obis, options)
+			return commandsMercury(obis, options)
 		default:
-			return commmandsMercury(Mercury_Counter_Commands.requiredCommands, options)
+			return commandsMercury(Mercury_Counter_Commands.requiredCommands, options)
 		}
 	} catch (error) {
 		throw new Error(`Error in readMercuryCounterOBIS function: ${error.message}`)
 	}
 }
 
-function commmandsMercury(data, options) {
+function commandsMercury(data, options) {
 	return data.map(i => {
-		let result = getRequest(i, options.meterType)
+		let result = getRequestCommandFromJson(i, options.meterType)
 		let newKey = Object.keys(result)[0]
-		if (options.adress.length) {
-			result[newKey].splice(0, 1, +options.adress)
+		if (options.address.length) {
+			result[newKey].splice(0, 1, +options.address)
 			if (i === '0.1') {
 				result.password.splice(3, 6, ...Array.from(options.password, c => +c))
 				// result.password = insertArgsIntoArray(result.password, options.password, 3)
@@ -85,22 +85,22 @@ function readCECounterOBIS(obis, options, key) {
 	try {
 		switch (key) {
 		case 'lst':
-			return commmandsCE(CE_Counter_Commands.lsts, options)
+			return commandsCE(CE_Counter_Commands.lsts, options)
 		case 'obis':
-			return commmandsCE(obis, options)
+			return commandsCE(obis, options)
 		default:
-			return commmandsCE(CE_Counter_Commands.requiredCommands, options)
+			return commandsCE(CE_Counter_Commands.requiredCommands, options)
 		}
 	} catch (error) {
 		throw new Error(`Error in readCECounterOBIS function: ${error.message}`)
 	}
 }
 
-function commmandsCE(data, options) {
+function commandsCE(data, options) {
 	return data.map(i => {
-		let result = getRequest(i, options.meterType)
-		if (i === '0.0' && options.adress.length) {
-			result.version = insertArgsIntoArray(result.version, options.adress, 2)
+		let result = getRequestCommandFromJson(i, options.meterType)
+		if (i === '0.0' && options.address.length) {
+			result.version = insertArgsIntoArray(result.version, options.address, 2)
 		} else if (i === '0.2') {
 			result.password = insertArgsIntoArray(result.password, options.password, 5)
 		}
@@ -108,7 +108,7 @@ function commmandsCE(data, options) {
 	})
 }
 
-function getRequest(argument, type) {
+function getRequestCommandFromJson(argument, type) {
 	const queriesOfType = queries[type] || [];
 	if (!Object.keys(queriesOfType).length) return {};
 	let dataR = {};

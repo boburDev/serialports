@@ -1,4 +1,6 @@
 const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeout');
+const { queryMaker } = require('./crc.js')
+
 
 const openPort = (port) => {
     return new Promise((resolve, reject) => {
@@ -59,9 +61,29 @@ const waitForData = (port, timeout = 1600) => {
     });
 };
 
+async function serialPortEngine(command, port, meterType) {
+        try {
+            let key = Object.keys(command)[0]
+            let dataReq = queryMaker([...Object.values(command)[0]], meterType, command.crc)
+            // console.log(key, dataReq);
+            if (key == 'closeCommand') {
+                await writeToPort(dataReq, port)
+                return {key,data:null}
+            } 
+            await writeToPort(dataReq, port)
+            const data = await waitForData(port);
+            return {key,data}
+        } catch (err) {
+            console.log(err)
+            throw new Error('Error in serialport engine', err.message)
+        }
+    }
+
+
 module.exports = {
     openPort,
     closePort,
     writeToPort,
-    waitForData
+    waitForData,
+    serialPortEngine
 }

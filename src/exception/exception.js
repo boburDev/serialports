@@ -1,6 +1,5 @@
-export class Exception extends Error {
+export class Exception {
 	constructor(message,status) {
-		super()
 		this.message = message
 		this.status = status
 	}

@@ -77,7 +77,6 @@ function getMercuryResult(data, key, opt) {
             };
         case 'currentDate':
             const mutatedData = data.map(item => item.toString(16).toUpperCase().slice(-4));
-            console.log(mutatedData)
             const [_,second, minute, hour, week, day, month, year, timeZone] = mutatedData;
             const date = `${hour}:${minute}:${second} ${day}.${month}.${year}`;
             return {[key]:date};

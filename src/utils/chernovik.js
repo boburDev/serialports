@@ -19,7 +19,7 @@ function calculateAdress(adress) {
         return parseInt((newFirstByte+secondByte), 2).toString(16).toUpperCase().match(/.{1,2}/g)
     }
 }
-console.log(calculateAdress(number));
+// console.log(calculateAdress(number));
 
 function ax25crc16(data_p) {
     let crc = 0xFFFF;
@@ -44,7 +44,7 @@ function ax25crc16(data_p) {
 const data = [0xA0, 0x19, 0x03, 0x05, 0x32, 0x3C, 0x9C, 0xE6, 0xE6, 0x00, 0xC0, 0x01, 0xC1, 0x00, 0x03, 0x01, 0x00, 0x48, 0x07, 0x00, 0xFF, 0x02, 0x00];
 
 const crcResult = ax25crc16(data);
-console.log(`CRC Result: 0x${crcResult.toString(16)}`);
+// console.log(`CRC Result: 0x${crcResult.toString(16)}`);
 
 
 
