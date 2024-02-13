@@ -6,14 +6,28 @@ function getTE_73Result(data, key) {
         const hexString = data.toString('hex');
         let dataBufArray = hexString.split(hexString.slice(0, 26))[1].match(/.{1,2}/g).slice(0, -3)
         let currentVal = dataBufArray.join('').slice(-8)
+
+        let newKey = key.split('.')
+
+        if(newKey.length === 2) {
+            if (newKey[0].includes('positive'))
+                key = 'Positive'
+            else if (newKey[0].includes('negative'))
+                key = 'Negative'
+        }
+
+        
+
+
         switch (key) {
             case 'currentDate':
                 return { [key]: currentDate(dataBufArray) };
             case 'frequency':
                 const frequency = parseInt(currentVal.slice(-4), 16) / 100;
                 return { [key]: frequency };
-            case '':
-                return 'ok'
+            case 'Negative':
+            case 'Positive':
+                return { [newKey]: 123 }
             default:
                 const res = parseInt(currentVal.slice(-4), 16) / 100;
                 console.log(key, currentVal, res);
