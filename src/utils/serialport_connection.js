@@ -10,8 +10,10 @@ const { getTE_73Result } = require('./result_convertors/TE_73CAS.js');
 async function getCounterResult(data) {
     try {
         const result = []
-        const { setUp, serialPort } = setConfig(data);
-        const port = new SerialPort(serialPort)
+        const { setUp, tcpConnection, serialPort } = setConfig(data);
+        
+        const port = setUp?.connectionType === 1 ? tcpConnection : setUp?.connectionType === 0 ? new SerialPort(serialPort) : undefined
+        if (!port) throw new Error('commMedia is not valid')
         let type = setUp.meterType.split('_')
         
         if (setUp.meterType.includes('CE')) {
@@ -58,7 +60,6 @@ async function getCounterResult(data) {
         } else if (setUp.meterType.includes('TE')) {
             const getCommands = ObisQuery[`${type[0]}_Counter_Query`](data.ReadingRegister, setUp, 'obis')
             const startCommands = ObisQuery[`${type[0]}_Counter_Query`](null, setUp)
-            console.log(getCommands);
             for(let i of getCommands) {
                 startCommands.splice(startCommands.length-1,0,i)
                 await openPort(port)
