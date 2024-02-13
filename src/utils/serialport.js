@@ -1,11 +1,20 @@
 const { SerialPort } = require('serialport');
 const { openPort, closePort, serialPortEngine } = require('./serialport_setups.js')
 const { setConfig } = require('../config.js')
-const ObisQuery = require('./obis_results')
+const ObisQuery = require('./obis_results/index.js')
 const { getEnergomeraResult } = require('./result_convertors/energomera_result_convertor.js')
 const { getMercuryResult } = require('./result_convertors/mercury_result_convertor.js');
 const { dateConvertor, getDaysArray } = require('./dateUtils.js');
 const { getTE_73Result } = require('./result_convertors/TE_73CAS.js');
+const { Validation } = require('../validation/validation.js');
+
+async function serialPort(dataReq) {
+    const { error, value } = Validation.validate(dataReq)
+
+    if (error) throw new Error(error.message)
+    
+    return value.ReadingRegisterTime ? await getLstCounterResult(value) : await getCounterResult(value)
+}
 
 async function getCounterResult(data) {
     try {
@@ -47,11 +56,7 @@ async function getCounterResult(data) {
                     let { data, key } = await serialPortEngine(j, port, type[0])
                     if (data && !['version', 'password'].includes(key)) {
                         let resValue = getMercuryResult(data,key)
-                        // if (resValue.version && !resValue.version.includes(type.join(''))) {
-                        //     throw new Error('connection error check parametres')
-                        // } else if (key != 'version') {
                         result.push(resValue)
-                        // }
                     }
                 }
                 startCommands.splice(startCommands.length,1)
@@ -66,14 +71,9 @@ async function getCounterResult(data) {
                 for (let j of startCommands) {
                     let { data, key } = await serialPortEngine(j, port, type[0])
                     if (data && !['version', 'password'].includes(key)) {
-                        console.log(key, data);
+                        console.log(key, data)
                         let resValue = getTE_73Result(data,key)
-                        // console.log(resValue)
-                        // if (resValue.version && !resValue.version.includes(type.join(''))) {
-                        //     throw new Error('connection error check parametres')
-                        // } else if (key != 'version') {
                         result.push(resValue)
-                        // }
                     }
                 }
                 startCommands.splice(startCommands.length,1)
@@ -173,4 +173,4 @@ async function getLstCounterResult(data) {
     }
 }
 
-module.exports = { getCounterResult, getLstCounterResult }
+module.exports = { serialPort }

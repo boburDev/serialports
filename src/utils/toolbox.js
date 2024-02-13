@@ -1,4 +1,4 @@
-const { queries } = require('../../queries')
+const { queries } = require('../queries')
 
 function getRequestCommandFromJson(argument, type) {
 	const queriesOfType = queries[type] || [];

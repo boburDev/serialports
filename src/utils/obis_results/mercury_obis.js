@@ -1,4 +1,4 @@
-const { getRequestCommandFromJson } = require('./toolbox')
+const { getRequestCommandFromJson } = require('../toolbox')
 
 const Mercury_Counter_Commands = {
 	requiredCommands: ['0.0','0.1']
