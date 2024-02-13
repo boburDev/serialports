@@ -10,10 +10,8 @@ const { Validation } = require('../validation/validation.js');
 
 async function serialPort(dataReq) {
     const { error, value } = Validation.validate(dataReq)
-
     if (error) throw new Error(error.message)
-    let data = value.ReadingRegisterTime ? await getLstCounterResult(value) : await getCounterResult(value)
-    return data
+    return value.ReadingRegisterTime ? await getLstCounterResult(value) : await getCounterResult(value)
 }
 
 async function getCounterResult(data) {
@@ -69,9 +67,10 @@ async function getCounterResult(data) {
                 startCommands.splice(startCommands.length-1,0,i)
                 await openPort(port)
                 for (let j of startCommands) {
+                    console.log(j);
                     let { data, key } = await serialPortEngine(j, port, type[0])
                     if (data && !['version', 'password'].includes(key)) {
-                        console.log(key, data)
+                        // console.log(key, data)
                         let resValue = getTE_73Result(data,key)
                         result.push(resValue)
                     }

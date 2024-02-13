@@ -67,7 +67,9 @@ function TE_Command(array) {
     
     let newCommand = [startCommand, ...newArray, endCommand]
 
-    if (newArray.length > 10) {
+    if (newArray.length === 10) {
+        newCommand = [startCommand, ...newArray, endCommand]
+    } else {
         newArray.splice(newArray.length - 2, 2);
         let crc2 = ax25crc16(newArray).toUpperCase().match(/.{1,2}/g);
         newCommand = [startCommand, ...newArray, ...crc2, endCommand]
@@ -77,7 +79,6 @@ function TE_Command(array) {
     for (let i = 0; i < newCommand.length; i++) {
         result.push(parseInt(newCommand[i], 16));
     }
-    
     return Buffer.from(result)
 }
 
