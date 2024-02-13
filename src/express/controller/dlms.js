@@ -1,13 +1,21 @@
-const { SerialPort } = require('serialport');
+const { Socket } = require('net');
 const {
-    openPort,
-    closePort,
-    waitForData,
-    writeToPort,
-} = require('../../utils/serialport_setups');
+    InterByteTimeoutParser,
+} = require('@serialport/parser-inter-byte-timeout');
 const { setConfig } = require('../../config');
 const { TE_Counter_Query } = require('../../utils/obis_results');
 const { getTE_73Result } = require('../../utils/result_convertors/TE_73CAS');
+
+const host = '176.96.236.223';
+const port = 10100;
+
+const socket = new Socket();
+const parser = socket.pipe(
+    new InterByteTimeoutParser({
+        interval: 100,
+        maxBufferSize: 10000,
+    })
+);
 
 const getMeterDataByDLMS = async (req, res) => {
     try {
@@ -43,20 +51,20 @@ const getMeterDataByDLMS = async (req, res) => {
         );
         let data = createNewRequestCommand(getCommands[0][key], address);
 
-        const port = new SerialPort(serialPort);
-        await openPort(port);
+        await openPort();
 
-        await writeToPort(connect, port);
-        const connectRes = await waitForData(port);
+        await writeToPort(connect);
+        const connectRes = await waitForData();
 
-        await writeToPort(password, port);
-        const passwordRes = await waitForData(port);
+        await writeToPort(password);
+        const passwordRes = await waitForData();
 
-        await writeToPort(data, port);
-        const resData = await waitForData(port);
+        await writeToPort(data);
+        const resData = await waitForData();
+        console.log(resData);
         const response = getTE_73Result(resData, key);
 
-        await closePort(port);
+        await closePort();
 
         res.json({ data: response });
     } catch (err) {
@@ -146,3 +154,64 @@ function hexStringToByteArray(hexString) {
     }
     return Buffer.from(result);
 }
+
+const openPort = () => {
+    return new Promise((resolve, reject) => {
+        socket.connect({ port, host }, () => {
+            resolve();
+        });
+
+        socket.on('error', err => {
+            reject(
+                new Error(
+                    `Failed to connect to ${host}:${port}. Error: ${err.message}`
+                )
+            );
+        });
+    });
+};
+
+const writeToPort = data => {
+    return new Promise((resolve, reject) => {
+        socket.write(data, 'ascii', err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+const waitForData = (timeout = 2000) => {
+    return new Promise((resolve, reject) => {
+        const dataHandler = data => {
+            resolve(data);
+        };
+        parser.once('data', dataHandler);
+
+        const timeoutId = setTimeout(() => {
+            parser.removeListener('data', dataHandler);
+            reject(new Error('Timeout waiting for data'));
+        }, timeout);
+
+        const clearTimer = () => {
+            clearTimeout(timeoutId);
+            parser.removeListener('data', dataHandler);
+        };
+
+        parser.once('data', clearTimer);
+    });
+};
+
+const closePort = () => {
+    return new Promise((resolve, reject) => {
+        socket.end(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
