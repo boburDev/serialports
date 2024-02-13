@@ -14,24 +14,21 @@ function getTE_73Result(data, key) {
                 key = 'Positive'
             else if (newKey[0].includes('negative'))
                 key = 'Negative'
-        }
-
-        
-
-        const res = parseInt(currentVal.slice(-4), 16) / 100;
+        } 
+ 
+        const resOfCurrent = parseInt(currentVal.slice(-4), 16)
 
         switch (key) {
             case 'currentDate':
                 return { [key]: currentDate(dataBufArray) };
             case 'frequency':
-                const frequency = parseInt(currentVal.slice(-4), 16) / 100;
-                return { [key]: frequency };
+                return { [key]: resOfCurrent / 100 };
             case 'Negative':
-            case 'Positive':                
-                return { [newKey.join('.')]: res }
+            case 'Positive':    
+                return { [newKey.join('.')]: resOfCurrent / 100 }
             default:
-                console.log(key, currentVal, res);
-                return { [key]: 'data' };
+                console.log(key, currentVal, resOfCurrent);
+                return { [key]: resOfCurrent };
         }
     } catch (error) {
         throw new Error(error.message);

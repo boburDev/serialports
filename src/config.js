@@ -7,10 +7,16 @@ const setConfig = (reqData) => ({
             parity: reqData.parity,
             autoOpen: false
         },
+        tcpConnection: {
+            host: reqData.commDetail1,
+            port: reqData.commDetail2,
+            tcp: true
+        },
         setUp: {
             address: reqData.MeterAddress || '',
             password: reqData.MeterPassword,
-            meterType: reqData.MeterType
+            meterType: reqData.MeterType,
+            connectionType: reqData.commMedia
         }
     })
 

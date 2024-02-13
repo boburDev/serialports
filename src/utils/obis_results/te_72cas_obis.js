@@ -1,4 +1,4 @@
-const { getRequestCommandFromJson } = require('./toolbox')
+const { getRequestCommandFromJson } = require('../toolbox')
 
 const TE_Counter_Commands = {
 	requiredCommands: ['0.0','0.1', '0.2']
