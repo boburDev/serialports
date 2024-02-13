@@ -1,8 +1,8 @@
 module.exports = { getTE_73Result };
 
-
 function getTE_73Result(data, key) {
     try {
+        console.log(data);
         const hexString = data.toString('hex');
         let dataBufArray = hexString.split(hexString.split('').slice(0, 26).join(''))[1].match(/.{1,2}/g).slice(0, -3);
         
@@ -15,12 +15,13 @@ function getTE_73Result(data, key) {
             let hour = parseInt(dataBufArray[12], 16);
             let minute = parseInt(dataBufArray[13], 16);
             let second = parseInt(dataBufArray[14], 16);
-            const result = `${pad2(day)}-${pad2(month)}-${year} ${pad2(hour)}:${pad2(minute)}:${pad2(second)}`;
-            return { [key]: result }
+            const result = `${pad2(day)}-${pad2(month)}-${year} ${pad2(
+                hour
+            )}:${pad2(minute)}:${pad2(second)}`;
+            return { [key]: result };
         } else if (key === 'frequency') {
-            const result = hexString.slice(-10, -6);
-            const frequency = parseInt(result, 16) / 100;
-            return { [key]: frequency }
+            const frequency = parseInt(result.slice('-4'), 16) / 100;
+            return { [key]: frequency };
         } else {
             console.log(key, data, dataBufArray);   
         }
