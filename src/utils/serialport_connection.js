@@ -67,10 +67,11 @@ async function getCounterResult(data) {
                     // console.log(key, data);
                     if (data && !['version', 'password'].includes(key)) {
                         let resValue = getTE_73Result(data,key)
+                        // console.log(resValue)
                         // if (resValue.version && !resValue.version.includes(type.join(''))) {
                         //     throw new Error('connection error check parametres')
                         // } else if (key != 'version') {
-                        // result.push(resValue)
+                        result.push(resValue)
                         // }
                     }
                 }

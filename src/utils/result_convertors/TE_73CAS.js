@@ -1,33 +1,28 @@
 module.exports = { getTE_73Result };
 
+
 function getTE_73Result(data, key) {
     try {
         const hexString = data.toString('hex');
+        let dataBufArray = hexString.split(hexString.split('').slice(0, 26).join(''))[1].match(/.{1,2}/g).slice(0, -3);
+        
+        let pad2 = n => String(n).padStart(2, '0')
+        
         if (key == 'currentDate') {
-            let dateBufArray = hexString
-                .split(hexString.split('').slice(0, 28).join(''))[1]
-                .match(/.{1,2}/g)
-                .slice(0, -3);
-            let year = parseInt(dateBufArray[6] + dateBufArray[7], 16);
-            let month = parseInt(dateBufArray[8], 16);
-            let day = parseInt(dateBufArray[9], 16);
-            let hour = parseInt(dateBufArray[11], 16);
-            let minute = parseInt(dateBufArray[12], 16);
-            let second = parseInt(dateBufArray[13], 16);
-            const result = `${day}-${month}-${year} ${hour}:${minute}:${String(
-                second
-            ).padStart(2, '0')}`;
-            return result;
+            let year = parseInt(dataBufArray[7] + dataBufArray[8], 16);
+            let month = parseInt(dataBufArray[9], 16);
+            let day = parseInt(dataBufArray[10], 16);
+            let hour = parseInt(dataBufArray[12], 16);
+            let minute = parseInt(dataBufArray[13], 16);
+            let second = parseInt(dataBufArray[14], 16);
+            const result = `${pad2(day)}-${pad2(month)}-${year} ${pad2(hour)}:${pad2(minute)}:${pad2(second)}`;
+            return { [key]: result }
         } else if (key === 'frequency') {
             const result = hexString.slice(-10, -6);
             const frequency = parseInt(result, 16) / 100;
-            return frequency;
+            return { [key]: frequency }
         } else {
-            let dateBufArray = hexString
-                .split(hexString.split('').slice(0, 28).join(''))[1]
-                .match(/.{1,2}/g)
-                .slice(0, -3);
-            console.log(dateBufArray);
+            console.log(data);   
         }
     } catch (error) {
         throw new Error(error.message);
