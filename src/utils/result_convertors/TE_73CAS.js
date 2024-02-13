@@ -18,6 +18,7 @@ function getTE_73Result(data, key) {
 
         
 
+        const res = parseInt(currentVal.slice(-4), 16) / 100;
 
         switch (key) {
             case 'currentDate':
@@ -26,10 +27,9 @@ function getTE_73Result(data, key) {
                 const frequency = parseInt(currentVal.slice(-4), 16) / 100;
                 return { [key]: frequency };
             case 'Negative':
-            case 'Positive':
-                return { [newKey]: 123 }
+            case 'Positive':                
+                return { [newKey.join('.')]: res }
             default:
-                const res = parseInt(currentVal.slice(-4), 16) / 100;
                 console.log(key, currentVal, res);
                 return { [key]: 'data' };
         }
