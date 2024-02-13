@@ -156,8 +156,8 @@ function calculateAddress(address) {
             .toUpperCase()
             .match(/.{1,2}/g);
     }
-}
-
+}   
+   
 function hexStringToByteArray(hexString) {
     const result = [];
     for (var i = 0; i < hexString.length; i++) {
@@ -165,7 +165,7 @@ function hexStringToByteArray(hexString) {
     }
     return Buffer.from(result);
 }
-  
+
 const openPort = () => {
     return new Promise((resolve, reject) => {
         socket.connect({ port, host }, () => {
