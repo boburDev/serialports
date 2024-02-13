@@ -7,7 +7,7 @@ function getTE_73Result(data, key) {
         let dataBufArray = hexString.split(hexString.split('').slice(0, 26).join(''))[1].match(/.{1,2}/g).slice(0, -3);
         
         let pad2 = n => String(n).padStart(2, '0')
-        
+
         if (key == 'currentDate') {
             let year = parseInt(dataBufArray[7] + dataBufArray[8], 16);
             let month = parseInt(dataBufArray[9], 16);
@@ -22,9 +22,13 @@ function getTE_73Result(data, key) {
             const frequency = parseInt(result, 16) / 100;
             return { [key]: frequency }
         } else {
-            console.log(data);   
+            console.log(key, data, dataBufArray);   
         }
     } catch (error) {
         throw new Error(error.message);
     }
+}
+
+function currentDate(params) {
+    
 }
