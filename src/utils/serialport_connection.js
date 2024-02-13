@@ -58,14 +58,14 @@ async function getCounterResult(data) {
         } else if (setUp.meterType.includes('TE')) {
             const getCommands = ObisQuery[`${type[0]}_Counter_Query`](data.ReadingRegister, setUp, 'obis')
             const startCommands = ObisQuery[`${type[0]}_Counter_Query`](null, setUp)
-            
+            console.log(getCommands);
             for(let i of getCommands) {
                 startCommands.splice(startCommands.length-1,0,i)
                 await openPort(port)
                 for (let j of startCommands) {
                     let { data, key } = await serialPortEngine(j, port, type[0])
-                    // console.log(key, data);
                     if (data && !['version', 'password'].includes(key)) {
+                        console.log(key, data);
                         let resValue = getTE_73Result(data,key)
                         // console.log(resValue)
                         // if (resValue.version && !resValue.version.includes(type.join(''))) {
