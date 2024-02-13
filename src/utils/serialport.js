@@ -12,8 +12,8 @@ async function serialPort(dataReq) {
     const { error, value } = Validation.validate(dataReq)
 
     if (error) throw new Error(error.message)
-    
-    return value.ReadingRegisterTime ? await getLstCounterResult(value) : await getCounterResult(value)
+    let data = value.ReadingRegisterTime ? await getLstCounterResult(value) : await getCounterResult(value)
+    return data
 }
 
 async function getCounterResult(data) {
