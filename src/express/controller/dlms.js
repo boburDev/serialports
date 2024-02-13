@@ -58,21 +58,32 @@ const getMeterDataByDLMS = async (req, res) => {
 
         await writeToPort(password);
         const passwordRes = await waitForData();
-
+        console.log(data);
         await writeToPort(data);
         const resData = await waitForData();
-        console.log(resData);
-        const response = getTE_73Result(resData, key);
+        console.log(key, resData);
+        // const response = getTE_73Result(resData, key);
 
+        const closeCommand = [
+            0x7e, 0xa0, 0x0a, 0x00, 0x02, 0x4c, 0x73, 0x05, 0x53, 0x27, 0xf1,
+            0x7e,
+        ];
+        const getClose = Buffer.from(closeCommand);
+        await writeToPort(getClose);
         await closePort();
-
-        res.json({ data: response });
+        res.json({ data: resData });
     } catch (err) {
+        const closeCommand = [
+            0x7e, 0xa0, 0x0a, 0x00, 0x02, 0x4c, 0x73, 0x05, 0x53, 0x27, 0xf1,
+            0x7e,
+        ];
+        const getClose = Buffer.from(closeCommand);
+        await writeToPort(getClose);
+        await closePort();
         console.error(`Error: ${err}`);
         res.status(500).json({ error: err.message });
     }
 };
-
 module.exports = getMeterDataByDLMS;
 
 function createNewRequestCommand(array, args, index = 5, deleteEl = 2) {
@@ -154,7 +165,7 @@ function hexStringToByteArray(hexString) {
     }
     return Buffer.from(result);
 }
-
+  
 const openPort = () => {
     return new Promise((resolve, reject) => {
         socket.connect({ port, host }, () => {
