@@ -3,32 +3,35 @@ module.exports = { getTE_73Result };
 
 function getTE_73Result(data, key) {
     try {
+        
         const hexString = data.toString('hex');
+        if (hexString.length == 24) return {key: 'emty'}
         let dataBufArray = hexString.split(hexString.slice(0, 26))[1].match(/.{1,2}/g).slice(0, -3)
+
         let currentVal = dataBufArray.join('').slice(-8)
-
+        
         let newKey = key.split('.')
-
+        
         if(newKey.length === 2) {
             if (newKey[0].includes('positive'))
-                key = 'Positive'
+            key = 'Positive'
             else if (newKey[0].includes('negative'))
-                key = 'Negative'
+            key = 'Negative'
         } 
- 
+        
+        
         const resOfCurrent = parseInt(currentVal.slice(-4), 16)
-
         switch (key) {
             case 'currentDate':
-                return { [key]: currentDate(dataBufArray) };
+            return { [key]: currentDate(dataBufArray) };
             case 'frequency':
-                return { [key]: resOfCurrent / 100 };
+            return { [key]: resOfCurrent / 100 };
             case 'Negative':
             case 'Positive':    
-                return { [newKey.join('.')]: resOfCurrent / 100 }
+            return { [newKey.join('.')]: resOfCurrent / 100 }
             default:
-                console.log(key, currentVal, resOfCurrent);
-                return { [key]: resOfCurrent };
+            // console.log(key, currentVal, resOfCurrent);
+            return { [key]: resOfCurrent };
         }
     } catch (error) {
         throw new Error(error.message);

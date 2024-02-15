@@ -1,6 +1,5 @@
 const { SerialPort } = require('serialport');
-const { openPort, closePort, serialPortEngine } = require('./serialport_setups.js')
-const { setConfig } = require('../config.js')
+const { setConfig, openPort, closePort, serialPortEngine } = require('./serialport_config.js')
 const ObisQuery = require('./obis_results/index.js')
 const { getEnergomeraResult } = require('./result_convertors/energomera_result_convertor.js')
 const { getMercuryResult } = require('./result_convertors/mercury_result_convertor.js');
@@ -63,25 +62,39 @@ async function getCounterResult(data) {
         } else if (setUp.meterType.includes('TE')) {
             const getCommands = ObisQuery[`${type[0]}_Counter_Query`](data.ReadingRegister, setUp, 'obis')
             const startCommands = ObisQuery[`${type[0]}_Counter_Query`](null, setUp)
-            for(let i of getCommands) {
-                startCommands.splice(startCommands.length-1,0,i)
-                await openPort(port)
-                for (let j of startCommands) {
-                    let { data, key } = await serialPortEngine(j, port, type[0])
-                    if (data && !['version', 'password'].includes(key)) {
-                        // console.log(key, data)
-                        let resValue = getTE_73Result(data,key)
-                        result.push(resValue)
-                    }
+            
+            let iter = [...startCommands, ...getCommands]
+            await openPort(port)
+
+            for (const i of iter) {
+                let { data, key } = await serialPortEngine(i, port, type[0])
+                if (data && !['version', 'password'].includes(key)) {
+                    let resValue = getTE_73Result(data,key)
+                    console.log(resValue);
                 }
-                startCommands.splice(startCommands.length,1)
-                await closePort(port)
+                
             }
+            await closePort(port)
+            // for(let i of getCommands) {
+            //     startCommands.splice(startCommands.length-1,0,i)
+            //     await openPort(port)
+            //     for (let j of startCommands) {
+            //         let { data, key } = await serialPortEngine(j, port, type[0])
+            //         if (data && !['version', 'password'].includes(key)) {
+            //             // console.log(key, data)
+            //             let resValue = getTE_73Result(data,key)
+            //             result.push(resValue)
+            //         }
+            //     }
+            //     startCommands.splice(startCommands.length,1)
+            //     await closePort(port)
+            // }
         } else {
             return [{data: 'this type of counter not riten yet'}]
         }
         return result
     } catch (error) {
+        console.log(error.message);
         throw new Error(`Error in getCounterResult function: ${error.message}`)
     }
 }
