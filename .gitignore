@@ -1,4 +1,5 @@
 ./public
+*.txt
 # Logs
 logs
 *.log
