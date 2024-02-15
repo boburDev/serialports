@@ -106,6 +106,7 @@ async function serialPortEngine(command, port, meterType) {
     try {
         let key = Object.keys(command)[0];
         let dataReq = queryMaker([...Object.values(command)[0]], meterType, command.crc);
+        // console.log(key, dataReq);
         if (key == 'closeCommand') {
             await writeToPort(dataReq, port);
             return { key, data: null };
@@ -114,7 +115,6 @@ async function serialPortEngine(command, port, meterType) {
         const data = await waitForData(port);
         return { key, data };
     } catch (err) {
-        console.log(err);
         throw new Error('Error in serialport engine', err.message);
     }
 }
@@ -123,10 +123,33 @@ function checkTCPConnection(port) {
     return port.tcp || false;
 }
 
+const setConfig = (reqData) => ({
+        serialPort: {
+            path: reqData.commDetail1,
+            baudRate: reqData.commDetail2,
+            dataBits: reqData.dataBit,
+            stopBits: reqData.stopBit,
+            parity: reqData.parity,
+            autoOpen: false
+        },
+        tcpConnection: {
+            host: reqData.commDetail1,
+            port: reqData.commDetail2,
+            tcp: true
+        },
+        setUp: {
+            address: reqData.MeterAddress || '',
+            password: reqData.MeterPassword,
+            meterType: reqData.MeterType,
+            connectionType: reqData.commMedia
+        }
+    })
+
 module.exports = {
     openPort,
     closePort,
     writeToPort,
     waitForData,
+    setConfig,
     serialPortEngine
 };

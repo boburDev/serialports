@@ -2,7 +2,6 @@ const { Socket } = require('net');
 const {
     InterByteTimeoutParser,
 } = require('@serialport/parser-inter-byte-timeout');
-const { setConfig } = require('../../config');
 const { TE_Counter_Query } = require('../../utils/obis_results');
 const { getTE_73Result } = require('../../utils/result_convertors/TE_73CAS');
 
@@ -226,3 +225,26 @@ const closePort = () => {
         });
     });
 };
+
+
+const setConfig = (reqData) => ({
+        serialPort: {
+            path: reqData.commDetail1,
+            baudRate: reqData.commDetail2,
+            dataBits: reqData.dataBit,
+            stopBits: reqData.stopBit,
+            parity: reqData.parity,
+            autoOpen: false
+        },
+        tcpConnection: {
+            host: reqData.commDetail1,
+            port: reqData.commDetail2,
+            tcp: true
+        },
+        setUp: {
+            address: reqData.MeterAddress || '',
+            password: reqData.MeterPassword,
+            meterType: reqData.MeterType,
+            connectionType: reqData.commMedia
+        }
+    })

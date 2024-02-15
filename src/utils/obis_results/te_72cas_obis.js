@@ -1,7 +1,7 @@
 const { getRequestCommandFromJson } = require('../toolbox')
 
 const TE_Counter_Commands = {
-	requiredCommands: ['0.0','0.1', '0.2']
+	requiredCommands: ['0.0','0.1']
 }
 
 function readTECounterOBIS(obis, options, key) {
